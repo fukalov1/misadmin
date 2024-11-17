@@ -11,11 +11,19 @@ import AppSidebar from '@/components/AppSidebar.vue'
     <div class="wrapper d-flex flex-column min-vh-100">
       <AppHeader />
       <div class="body flex-grow-1">
-<!--        <CContainer class="px-4" lg>-->
+        <CContainer class="px-xxl-0" xxl>
           <router-view />
-<!--        </CContainer>-->
+        </CContainer>
       </div>
       <AppFooter />
     </div>
   </div>
 </template>
+
+<style scoped>
+@media (min-width: 1400px) {
+  .container-xxl, .container-xl, .container-lg, .container-md, .container-sm, .container {
+    max-width: 1820px;
+  }
+}
+</style>

@@ -60,10 +60,10 @@ function Authentication() {
             <CCard class="text-white bg-primary py-5" style="width: 44%">
               <CCardBody class="text-center">
                 <div>
-                  <h2>Стамус</h2>
+                  <h2>МС-Ресурс</h2>
                   <p>
-                    Статистическая система стоматологических клиник СТАМУС.<br/><br/>
-                    Для доступа получите реквизиты входа у администратора.
+                    Личный кабинет <br/>
+                    поверителя.
                   </p>
                 </div>
               </CCardBody>

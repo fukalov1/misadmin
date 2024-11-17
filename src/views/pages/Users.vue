@@ -1,6 +1,6 @@
 <script setup>
 import { ref, defineCustomElement, onMounted, watch } from 'vue'
-import TableUser from '../base/TableUser.vue'
+import TableUser from '../ServiceRequests/TableUser.vue'
 import TableUserForm from '../forms/TableUserForm.vue'
 import {routes} from '../../api/routes'
 import axios from 'axios'

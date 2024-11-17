@@ -6,7 +6,9 @@ export const useUserStore = defineStore('user', {
   state: () => ({
     isLoggedIn: false,
     token: '',
-    role: null
+    role: null,
+    roles: null,
+    user: {}
   }),
   getters: {
     isLoggedInAndHasToken({isLoggedIn, token}) {
@@ -23,11 +25,16 @@ export const useUserStore = defineStore('user', {
       this.isLoggedIn = false
       this.token = null
       this.role = null
+      this.roles = null
       deleteCookie('api_token')
       document.location = '/'
     },
     setRole(_role) {
       this.role = _role
+    },
+    setUser(_user) {
+      this.user = _user
+      this.roles = _user.roles
     }
   }
 })

@@ -1,7 +1,7 @@
 <script setup>
 import { ref, defineCustomElement, onMounted, watch } from 'vue'
-import TableUser from '../base/TableUser.vue'
-import TableUserForm from '../forms/TableUserForm.vue'
+import ServiceRequestTable from '../ServiceRequests/ServiceRequestTable.vue'
+import ServiceRequestForm from '../ServiceRequests/ServiceRequestForm.vue'
 import {routes} from '../../api/routes'
 import axios from 'axios'
 import { getCookie } from '@/helpers/cookie'
@@ -163,15 +163,15 @@ function deleteItem(row) {
 
 <template>
   <div v-if="process">
-    <TableUser
+    <ServiceRequestTable
     :editable="true"
     :rows="data"
     :columns="columns"
     @enableEditMode="changeEditMode"
     @DeleteItem="deleteItem"
     v-if="edit_mode===false">
-  </TableUser>
-    <TableUserForm
+  </ServiceRequestTable>
+    <ServiceRequestForm
     v-else
     @enableEditMode="changeEditMode"
     @DeleteItem="deleteItem"

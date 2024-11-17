@@ -7,7 +7,6 @@ import router from './router'
 import CoreuiVue from '@coreui/vue'
 import CIcon from '@coreui/icons-vue'
 import { iconsSet as icons } from '@/assets/icons'
-import DocsExample from '@/components/DocsExample'
 
 import VueGoodTablePlugin from 'vue-good-table-next';
 import 'vue-good-table-next/dist/vue-good-table-next.css'
@@ -30,7 +29,6 @@ app.use(CoreuiVue)
 app.use(VueGoodTablePlugin);
 app.provide('icons', icons)
 app.component('CIcon', CIcon)
-app.component('DocsExample', DocsExample)
 app.component('VueDatePicker', VueDatePicker);
 
 app.mount('#app')

@@ -5,8 +5,14 @@ import { logo } from '@/assets/brand/logo'
 import { sygnet } from '@/assets/brand/sygnet'
 import { AppSidebarNav } from '@/components/AppSidebarNav.js'
 import { useSidebarStore } from '@/stores/sidebar.js'
+import { useUserStore } from '@/stores/user.js'
 
 const sidebar = useSidebarStore()
+
+const currentUser = useUserStore();
+console.log('get current user', currentUser.isLoggedIn)
+
+
 </script>
 
 <template>
