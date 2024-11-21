@@ -8,6 +8,19 @@ const  props = defineProps({
   }
 })
 
+const format = (dates) => {
+  console.log('select date ', dates[0], dates[1])
+  const day1 = dates[0].getDate();
+  const month1 = dates[0].getMonth() + 1;
+  const year1 = dates[0].getFullYear();
+
+  const day2 = dates[1].getDate();
+  const month2 = dates[1].getMonth() + 1;
+  const year2 = dates[1].getFullYear();
+
+  return `${day1}/${month1}/${year1} - ${day2}/${month2}/${year2}`;
+}
+
 function filterData() {
   emit('enableFilterMode', false, props.filters)
 }
@@ -37,6 +50,12 @@ function resetData() {
                 v-model="filter.value"
                 v-if="filter.type==='bool'"
               />
+              <VueDatePicker
+                v-model="filter.value"
+                locale="ru"
+                model-auto
+                v-else-if="filter.type==='daterange'"
+                range />
               <VueDatePicker
                 locale="ru"
                 v-model="filter.value"

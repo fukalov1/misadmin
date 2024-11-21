@@ -74,10 +74,10 @@ const visible = ref(false)
 
 const filters = ref([
   {
-    label: 'Дата',
-    name: 'created_at',
+    label: 'Период',
+    name: 'dateRange',
     type: 'daterange',
-    value: null
+    value: ['','']
   },
   {
     label: 'Номер акта',
@@ -142,6 +142,35 @@ function loadData() {
     act_brak: 0,
   };
   filters.value.forEach(function(item) {
+    if (item.name==='dateRange') {
+      console.log('date range', typeof item.dateRange,  item.value[0])
+      // const date1 = Date(item.value[0]);
+      console.log('set date 1', item.value[0])
+      // const day1 = item.value[0].getDate();
+      // const month1 = item.value[0].getMonth() + 1;
+      // const year1 = item.value[0].getFullYear();
+      //
+      // const day2 = item.value[1].getDate();
+      // const month2 = item.value[1].getMonth() + 1;
+      // const year2 = item.value[1].getFullYear();
+      //
+      // filters_.dateRange['startDate'] =  `${year1}-${month1}-${day1}`
+      // filters_.dateRange['endDate'] = `${year2}-${month2}-${day2}`
+      if (item.value[0]) {
+        let day = item.value[0].getDate()
+        day = day < 10 ? '0'+day : day
+        let month = item.value[0].getMonth()+1
+        month = month < 10 ? '0'+month : month
+        filters_.dateRange['startDate'] = item.value[0].getFullYear() + '-' + month + '-' + day
+      }
+      if (item.value[1]) {
+        let day = item.value[1].getDate()
+        day = day < 10 ? '0'+day : day
+        let month = item.value[1].getMonth()+1
+        month = month < 10 ? '0'+month : month
+        filters_.dateRange['endDate'] = item.value[1].getFullYear() + '-' + month + '-' + day
+      }
+    }
     if (typeof filters_[item.name] !== "undefined" && item.name==='number') {
       filters_['number'] = item.value ?? ''
     }
@@ -161,7 +190,7 @@ function loadData() {
       filters_['act_brak'] = + item.value ?? 0
     }
   });
-  console.log('filetrs', filters_)
+  console.log('Apply filters', filters_)
 
   let dataParams = {
     currentPage: currentPage.value,
@@ -169,6 +198,8 @@ function loadData() {
     filters: filters_,
     sort: {}
   }
+
+  console.log('All params', dataParams)
 
   let dataJSON = getQueryString(dataParams);
   console.log(`${routes.acts}/${currentUser.user.id}?${dataJSON}`);
@@ -253,6 +284,7 @@ function deleteItem(row) {
 }
 
 function enableFilterMode() {
+  console.log('change filters ', filters)
   loadData()
 }
 
