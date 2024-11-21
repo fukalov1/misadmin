@@ -1,17 +1,15 @@
 <script setup>
 
-const { editable, rows } = defineProps(['editable', 'rows', 'columns'])
-const emit = defineEmits(['enableEditMode', 'deleteItem', 'changePage', 'changePerPage'])
-
-// const props = defineProps({
-//   columns: {
-//     type: Array,
-//     required: true
-//   }
-// })
+const { editable, rows } = defineProps(['editable', 'rows', 'columns', 'sort'])
+const emit = defineEmits(['enableEditMode', 'deleteItem', 'changePage', 'changePerPage', 'changeSort'])
 
 function  rowStyleClassFn(row) {
   return row.exported === 1 ? 'bg-green' : '';
+}
+
+function onSortChange(params) {
+  console.log('sorting', params)
+  emit('changeSort', params)
 }
 
 function onPageChange(params) {
@@ -31,6 +29,7 @@ function onPerPageChange(params) {
       :totalRows="155"
       :columns="columns"
       :rows="rows"
+      v-on:sort-change="onSortChange"
       v-on:page-change="onPageChange"
       v-on:per-page-change="onPerPageChange"
       theme="dark"
@@ -62,7 +61,7 @@ function onPerPageChange(params) {
                  class="btn-action blue"
                  @click="$emit('enableEditMode', true, props.row)"/>
           <CIcon icon="cil-x" size="xl"
-                 @click="$emit('deleteItem', props.formattedRow)"
+                 @click="$emit('deleteItem', props.row)"
                  class="btn-action red"
                  v-if="props.row.exported===0"
           />

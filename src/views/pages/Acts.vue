@@ -17,6 +17,8 @@ const current_row = ref({})
 const currentPage = ref(1)
 const currentPerPage = ref(10)
 
+const sort = ref({})
+
 const columns = [
   {
     label: 'Номер',
@@ -77,43 +79,50 @@ const filters = ref([
     label: 'Период',
     name: 'dateRange',
     type: 'daterange',
-    value: ['','']
+    value: ['',''],
+    default: ['',''],
   },
   {
     label: 'Номер акта',
     name: 'number',
     type: 'text',
-    value: null
+    value: null,
+    default: null
   },
   {
     label: 'Заводской номер СИ',
     name: 'serialNumber',
     type: 'text',
-    value: null
+    value: null,
+    default: null
   },
   {
     label: 'Адрес',
     name: 'address',
     type: 'text',
-    value: null
+    value: null,
+    default: null
   },
   {
     label: 'Пригоден',
     name: 'act_good',
     type: 'bool',
-    value: 1
+    value: 1,
+    default: 1
   },
   {
     label: 'Непригоден',
     name: 'act_bad',
     type: 'bool',
-    value: 1
+    value: 1,
+    default: 1
   },
   {
     label: 'Испорчен',
     name: 'act_brak',
     type: 'bool',
-    value: 0
+    value: 0,
+    default: 0
   },
 ])
 
@@ -183,7 +192,7 @@ function loadData() {
     currentPage: currentPage.value,
     perPage: currentPerPage.value,
     filters: filters_,
-    sort: {}
+    sort: sort.value
   }
 
   console.log('All params', dataParams)
@@ -252,26 +261,39 @@ function saveItem(row) {
 }
 
 function deleteItem(row) {
-  if (confirm('Вы точно хотите удалить запись id: '+row.id+'?')) {
+  if (confirm('Вы точно хотите удалить act: '+row.number_act+'?')) {
     edit_mode.value = false
     current_row.value = row
-
-    axios.delete(routes.users, row.id).then((response) => {
-      if (response.data.success === true) {
-        console.log('Success record delete', Object.keys(row))
-      }
-      else {
-        console.log('Record dont delete')
-      }
-    }).catch(error => {
-      console.log('Error record delete')
-    })
-
+    removeAct()
   }
 }
 
+function removeAct(item) {
+  console.log('row', current_row.value)
+    axios.delete(`${routes.acts}/${current_row.value.id}/${current_row.value.user_id}`, {})
+      .then((resp) => {
+        alert(resp.data.data);
+        if (resp.data.success) loadData();
+      })
+      .catch((error) => {
+        alert('Ошибка! Акт '+item.number_act+' не удален. '+error.message);
+      });
+};
+
+
 function enableFilterMode() {
   console.log('change filters ', filters)
+  loadData()
+}
+
+function changeSort(val) {
+  sort.value = {}
+  if (val.length > 0) {
+    sort.value[val[0].field] = val[0].type
+  }
+  else {
+    sort.value = []
+  }
   loadData()
 }
 
@@ -301,6 +323,7 @@ function changePerPage(perPage) {
     :editable="true"
     :rows="data"
     :columns="columns"
+    @changeSort="changeSort"
     @changePage="changePage"
     @changePerPage="changePerPage"
     @enableEditMode="changeEditMode"

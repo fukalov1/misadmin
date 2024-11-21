@@ -31,7 +31,7 @@ function filterData() {
 
 function resetData() {
   props.filters.map(function (item) {
-    item.value = '';
+    item.value = item.default;
   })
   emit('enableFilterMode', false, props.filters)
 }
