@@ -143,19 +143,6 @@ function loadData() {
   };
   filters.value.forEach(function(item) {
     if (item.name==='dateRange') {
-      console.log('date range', typeof item.dateRange,  item.value[0])
-      // const date1 = Date(item.value[0]);
-      console.log('set date 1', item.value[0])
-      // const day1 = item.value[0].getDate();
-      // const month1 = item.value[0].getMonth() + 1;
-      // const year1 = item.value[0].getFullYear();
-      //
-      // const day2 = item.value[1].getDate();
-      // const month2 = item.value[1].getMonth() + 1;
-      // const year2 = item.value[1].getFullYear();
-      //
-      // filters_.dateRange['startDate'] =  `${year1}-${month1}-${day1}`
-      // filters_.dateRange['endDate'] = `${year2}-${month2}-${day2}`
       if (item.value[0]) {
         let day = item.value[0].getDate()
         day = day < 10 ? '0'+day : day

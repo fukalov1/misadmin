@@ -10,12 +10,16 @@ const  props = defineProps({
 
 const format = (dates) => {
   console.log('select date ', dates[0], dates[1])
-  const day1 = dates[0].getDate();
-  const month1 = dates[0].getMonth() + 1;
+  let day1 = dates[0].getDate();
+  day1 = day1 < 10 ? '0'+day1 : day1
+  let month1 = dates[0].getMonth() + 1
+  month1 = month1 < 10 ? '0'+month1 : month1
   const year1 = dates[0].getFullYear();
 
-  const day2 = dates[1].getDate();
-  const month2 = dates[1].getMonth() + 1;
+  let day2 = dates[1].getDate();
+  day2 = day2 < 10 ? '0'+day2 : day2
+  let month2 = dates[1].getMonth() + 1;
+  month2 = month2 < 10 ? '0'+month2 : month2
   const year2 = dates[1].getFullYear();
 
   return `${day1}/${month1}/${year1} - ${day2}/${month2}/${year2}`;
@@ -53,7 +57,7 @@ function resetData() {
               <VueDatePicker
                 v-model="filter.value"
                 locale="ru"
-                model-auto
+                :format="format"
                 v-else-if="filter.type==='daterange'"
                 range />
               <VueDatePicker
