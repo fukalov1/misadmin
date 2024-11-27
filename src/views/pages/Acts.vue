@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import axios from 'axios'
 import {routes} from '../../api/routes'
 import { getCookie } from '@/helpers/cookie'
@@ -15,7 +15,8 @@ const process = ref(false);
 const edit_mode = ref(false)
 const current_row = ref({})
 const currentPage = ref(1)
-const currentPerPage = ref(10)
+const currentPerPage = ref(15)
+const worker = ref(null);
 
 const sort = ref({})
 
@@ -132,6 +133,13 @@ onMounted(() => {
   if (token) {
     axios.defaults.headers.common.Authorization = `Bearer ${token}`
   }
+  if (worker.value===null)
+    worker.value = currentUser.user.id
+  loadData()
+})
+
+watch(worker, () => {
+  // console.log('watches worker ',worker.value)
   loadData()
 })
 
@@ -186,7 +194,7 @@ function loadData() {
       filters_['act_brak'] = + item.value ?? 0
     }
   });
-  console.log('Apply filters', filters_)
+  // console.log('Apply filters', filters_)
 
   let dataParams = {
     currentPage: currentPage.value,
@@ -195,19 +203,20 @@ function loadData() {
     sort: sort.value
   }
 
-  console.log('All params', dataParams)
+  // console.log('All params', dataParams)
 
   let dataJSON = getQueryString(dataParams);
-  console.log(`${routes.acts}/${currentUser.user.id}?${dataJSON}`);
+  // console.log(`${routes.acts}/${currentUser.user.id}?${dataJSON}`);
 
-  axios.get(`${routes.acts}/${currentUser.user.id}?${dataJSON}`).then((response) => {
+  data.value = [];
+  axios.get(`${routes.acts}/${worker.value}?${dataJSON}`).then((response) => {
     if (response.data.success === true) {
       data.value = response.data.data;
       // console.log('data', data)
     }
 
     process.value = true
-    console.log('Process', process)
+    // console.log('Process', process)
   }).catch(error => {
     // console.log('Error get record ', error)
     if (error.response.data.status===400) {
@@ -215,7 +224,7 @@ function loadData() {
     }
     process.value = true
   })
-  console.log('Process', process)
+  // console.log('Process', process)
 }
 
 function exportedFn(row) {
@@ -269,7 +278,7 @@ function deleteItem(row) {
 }
 
 function removeAct(item) {
-  console.log('row', current_row.value)
+  // console.log('row', current_row.value)
     axios.delete(`${routes.acts}/${current_row.value.id}/${current_row.value.user_id}`, {})
       .then((resp) => {
         alert(resp.data.data);
@@ -282,7 +291,7 @@ function removeAct(item) {
 
 
 function enableFilterMode() {
-  console.log('change filters ', filters)
+  // console.log('change filters ', filters)
   loadData()
 }
 
@@ -311,13 +320,32 @@ function changePerPage(perPage) {
 
 <template>
   <div>
-    <CButton color="primary" @click="visible = !visible">Фильтр</CButton>
+      <CRow>
+        <CCol sm="12">
+          <label>
+            Поверитель
+          </label>
+          <select v-model="worker" class="form-control">
+            <option :value="currentUser.user.id">
+              {{ currentUser.user.name }}
+            </option>
+            <option v-for="(item, index) in currentUser.user.slave_users" :key="index" :value="item.slave_id">
+              {{ item.slave.name }}
+            </option>
+          </select>
+        </CCol>
+      </CRow>
+    <br/>
+    <CButton color="primary" @click="visible = !visible" class="mb-3 right">Фильтр</CButton>
+    <CRow>
+      <CCol sm="12">
     <CCollapse :visible="visible">
       <ActFilter
         @enableFilterMode="enableFilterMode"
         :filters="filters"/>
     </CCollapse>
-
+      </CCol>
+    </CRow>
 
     <ActTable
     :editable="true"

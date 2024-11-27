@@ -8,7 +8,6 @@ function  rowStyleClassFn(row) {
 }
 
 function onSortChange(params) {
-  console.log('sorting', params)
   emit('changeSort', params)
 }
 
@@ -54,6 +53,9 @@ function onPerPageChange(params) {
         pageLabel: 'стр', // for 'pages' mode
         allLabel: 'All'}"
     >
+      <template #emptystate>
+        Нет данных
+      </template>
       <template #table-row="props">
         <span v-if="props.column.field == 'id' && editable">
           <CIcon icon="cil-pencil"
