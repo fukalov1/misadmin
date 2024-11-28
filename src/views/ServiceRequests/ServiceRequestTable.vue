@@ -1,7 +1,7 @@
 <script setup>
 
 const { editable, rows } = defineProps(['editable', 'rows', 'columns'])
-const emit = defineEmits(['enableEditMode', 'deleteItem'])
+const emit = defineEmits(['enableEditMode', 'deleteItem', 'attachActServiceRequest'])
 
 // const props = defineProps({
 //   columns: {
@@ -16,6 +16,14 @@ function  rowStyleClassFn(row) {
 
 function loadPdf(item) {
   window.open(`/data/act/pdf?id=${item.number_act}&pin=${item.pin}`, '_blank')
+}
+
+function attachAct(item) {
+  let number_act = prompt('','')
+  if (number_act!=='')
+    emit('attachActServiceRequest', item, number_act)
+  else
+    alert('Ошибка! Номер акта не может быть пустым.')
 }
 
 </script>
@@ -58,11 +66,11 @@ function loadPdf(item) {
           <CIcon icon="cil-airplay" size="xl"
                  title="прикрепить акт к заявке"
                  v-if="props.row.number_act===null && props.row.status == 'Согласована'"
-                 @click="$emit('attachActServiceRequest', props.formattedRow)"
+                 @click="attachAct(props.row)"
                  class="btn-action green"/>
           <CIcon icon="cib-adobe-acrobat-reader" size="xl"
                  title="Загрузить PDF акта"
-                 v-if="props.row.type!=='испорчен'"
+                 v-if="props.row.type!=='испорчен' && props.row.request_status_id > 4  && props.row.request_status_id < 8"
                  @click="loadPdf(props.formattedRow)"
                  class="btn-action black"/>
           <CIcon icon="cil-x" size="xl"

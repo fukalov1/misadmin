@@ -327,7 +327,7 @@ function acceptData(show, row) {
   if (show)
     current_row.value = row
   if (show === false && row !== null)
-    saveItem(row)
+    saveItem('accept')
 }
 
 function approveData(show, row) {
@@ -336,10 +336,10 @@ function approveData(show, row) {
   if (show)
     current_row.value = row
   if (show === false && row !== null)
-    saveItem(row)
+    saveItem('approve')
 }
 
-function saveItem() {
+function saveItem(type) {
   let data = {
     id: current_row.value.id,
     user_id: current_row.value.user_id,
@@ -351,14 +351,17 @@ function saveItem() {
     comment: current_row.value.comment,
     phone: current_row.value.phone,
     city_id: current_row.value.city_id,
-    address: current_row.value.address
+    address: current_row.value.address,
   }
   console.log('Send data', data);
   let url = `/api/v1/service-request/accept`;
-  if (current_row.value.request_status_id === 2) {
+  if (type == 'accept') {
     url = `/api/v1/service-request/set-status`;
-    // data.user_id = store.getters.user.id;
     data.status = '3';
+  }
+  if (type == 'approve') {
+    url = `/api/v1/service-request/set-status`;
+    data.status = '4';
   }
 
   const token = getCookie('api_token')
@@ -375,6 +378,26 @@ function saveItem() {
       });
   }
 }
+
+
+function attachActServiceRequest(item, number_act)  {
+  const token = getCookie('api_token')
+  if (token) {
+    axios.defaults.headers.common.Authorization = `Bearer ${token}`
+    // console.log('attachActServiceRequest', item, number_act);
+    axios.post(`/api/v1/service-request/attach-act`,
+      {service_request: item, number_act: number_act})
+      .then((resp) => {
+        alert('Прикрепление акта '+ resp.data.data);
+        if (resp.data.success) loadData();
+      })
+      .catch((resp) => {
+        console.log('Error attach act on service request ', resp);
+        alert('Ошибка! Акт не прикреплен к заявке ' + item.name + '. ' + resp.data);
+      });
+  }
+}
+
 
 function deleteItem(row) {
   if (confirm('Вы точно хотите удалить запись id: '+row.id+'?')) {
@@ -416,6 +439,7 @@ function deleteItem(row) {
     :columns="columns"
     @enableEditMode="changeEditMode"
     @DeleteItem="deleteItem"
+    @attachActServiceRequest="attachActServiceRequest"
     v-if="edit_mode===false">
   </ServiceRequestTable>
     <ServiceRequestForm
