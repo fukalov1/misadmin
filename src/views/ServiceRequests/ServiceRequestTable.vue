@@ -1,7 +1,7 @@
 <script setup>
 
 const { editable, rows } = defineProps(['editable', 'rows', 'columns'])
-const emit = defineEmits(['enableEditMode', 'deleteItem', 'attachActServiceRequest'])
+const emit = defineEmits(['enableEditMode', 'cancelServiceRequest', 'attachActServiceRequest'])
 
 // const props = defineProps({
 //   columns: {
@@ -19,11 +19,19 @@ function loadPdf(item) {
 }
 
 function attachAct(item) {
-  let number_act = prompt('','')
+  let number_act = prompt('Укажите номер акта, который хотите привязать к заявке','')
   if (number_act!=='')
     emit('attachActServiceRequest', item, number_act)
   else
     alert('Ошибка! Номер акта не может быть пустым.')
+}
+
+function cancelServiceRequest(item) {
+  let comment = prompt('Укажите причину отмены заявки','')
+  if (comment!=='')
+    emit('cancelServiceRequest', item, comment)
+  else
+    alert('Ошибка! Не указана причина отмены заявки.')
 }
 
 </script>
@@ -78,7 +86,7 @@ function attachAct(item) {
                  v-if="!!props.row.act_id===false
                        && (props.row.request_status_id === 2 || props.row.request_status_id === 3 ||
                        props.row.request_status_id === 4)"
-                 @click="$emit('deleteItem', props.formattedRow)"
+                 @click="cancelServiceRequest(props.row)"
                  class="btn-action red"/>
         </span>
         <span v-else>

@@ -399,22 +399,24 @@ function attachActServiceRequest(item, number_act)  {
 }
 
 
-function deleteItem(row) {
-  if (confirm('Вы точно хотите удалить запись id: '+row.id+'?')) {
+function cancelServiceRequest(item, comment) {
+  if (confirm('Вы точно хотите отменить заявку: '+item.name+'?')) {
     edit_mode.value = false
-    current_row.value = row
 
-    axios.delete(routes.users, row.id).then((response) => {
-      if (response.data.success === true) {
-        console.log('Success record delete', Object.keys(row))
-      }
-      else {
-        console.log('Record dont delete')
-      }
-    }).catch(error => {
-      console.log('Error record delete')
-    })
-
+    const token = getCookie('api_token')
+    if (token) {
+      axios.defaults.headers.common.Authorization = `Bearer ${token}`
+      axios.post(`/api/v1/service-request/set-status`, item)
+        .then((resp) => {
+          alert('Отмена заявки '+resp.data.data);
+          // console.log('response', resp.data);
+          if (resp.data.success) loadData()
+        })
+        .catch((resp) => {
+          console.log('Error cancel service request ', resp);
+          // Swal.fire('Ошибка! Заявка '+item.name+' не отменена.');
+        });
+    }
   }
 }
 
@@ -438,7 +440,7 @@ function deleteItem(row) {
     :rows="data"
     :columns="columns"
     @enableEditMode="changeEditMode"
-    @DeleteItem="deleteItem"
+    @cancelServiceRequest="cancelServiceRequest"
     @attachActServiceRequest="attachActServiceRequest"
     v-if="edit_mode===false">
   </ServiceRequestTable>
