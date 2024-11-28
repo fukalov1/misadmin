@@ -11,7 +11,7 @@ export default [
   },
   {
     component: 'CNavItem',
-    name: 'Заявки',
+    name: 'Заявки диспетчера',
     to: '/service-requests',
     icon: 'cil-people',
   },

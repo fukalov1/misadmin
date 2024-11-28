@@ -1,6 +1,6 @@
 <script setup>
-
-const emit = defineEmits(['enableEditMode', 'deleteItem'])
+import { ref,  watch } from 'vue'
+const emit = defineEmits(['accept-data', 'approve-data', 'cancel-data'])
 
 const  props = defineProps({
   item: {
@@ -11,16 +11,59 @@ const  props = defineProps({
   }
 })
 
-function saveData() {
-  emit('enableEditMode', false, props.item)
+const data = ref(props.item);
+const show_accept = ref(false);
+const show_approve = ref(false);
+
+
+watch(
+  data,
+  (newValue, oldValue) => {
+    // console.log(newValue, oldValue)
+    show_accept.value = show_approve.value = false
+    if (newValue.user_id>0 && newValue.time
+      && newValue.address && newValue.miowner
+      && newValue.date) {
+      let date = new Date(newValue.date+' '+newValue.time+':00');
+      if (newValue.date.length == 10 && date.getTime() < (new Date()).getTime()) {
+        show_approve.value = false;
+        alert('Внимание! Дата и время визита не может быть прошедшими')
+      }
+      else
+        show_approve.value = true;
+    }
+    else
+      show_approve.value = false;
+
+    if (newValue.user_id>0 && newValue.status==='Новая') {
+      show_accept.value = true
+    }
+    else
+      show_accept.value = false
+  },
+  {deep: true}
+);
+
+
+function acceptData() {
+  emit('accept-data', false, data)
+}
+
+function approveData() {
+  emit('approve-data', false, data)
 }
 
 function cancelData() {
-  emit('enableEditMode', false, null)
+  emit('cancel-data', false, null)
 }
 
-function deleteData() {
-  emit('deleteItem', props.item)
+
+const format = (date) => {
+  const day = date.getDate();
+  const month = date.getMonth() + 1;
+  const year = date.getFullYear();
+
+  return `${day}-${month}-${year}`;
 }
 
 </script>
@@ -35,92 +78,59 @@ function deleteData() {
         <CCardBody>
             <CForm>
               <CRow class="mb-3" v-for="(column, index) in columns" :key="index">
-                <input type="hidden" v-model="item.id" v-if="column.field==='id'"/>
-                <CFormLabel :for="'input'+column.name" class="col-sm-2 col-form-label"  v-if="column.field!=='id'">
+                <input type="hidden" id="id" name="id" v-model="data.id" v-if="column.field==='id'"/>
+                <CFormLabel :for="'input'+column.field" class="col-sm-2 col-form-label"  v-if="column.field!=='id' && column.showForm">
                   {{ column.label }}
                 </CFormLabel>
-                <CCol :sm="10" v-if="column.field!=='id'">
-                  <CFormCheck
-                    :id="'input'+column.field"
-                    v-model="item[column.field]"
-                    v-if="column.type==='bool'"
-                  />
+                <CCol :sm="10" v-if="column.field!=='id' && column.showForm">
+
                   <VueDatePicker
                     locale="ru"
                     :disabled="column.disabled"
-                    v-model="item[column.field]"
-                    v-else-if="column.type==='date'">
+                    v-model="data[column.field]"
+                    :format="format"
+                    v-if="column.type==='datetime'">
                   </VueDatePicker>
-                  <CFormSelect :aria-label="item.label" v-else-if="column.type==='options'" v-model="item[column.field]">
-                    <option v-for="(item, indx) in column.options" :value="item.id" :key="indx">
-                      {{ item.value }}
+                  <CFormSelect :aria-label="column.label"
+                               v-else-if="column.type==='lists'"
+                               v-model="data[column.field]">
+                    <option v-for="(item1, indx) in column.options" :value="item1.id" :key="indx">
+                      {{ item1.value }}
+                    </option>
+                  </CFormSelect>
+                  <CFormSelect :aria-label="column.label" v-else-if="column.type==='options'" v-model="data[column.field]">
+                    <option v-for="(item1, indx) in column.options" :value="item1.id" :key="indx">
+                      {{ item1.value }}
                     </option>
                   </CFormSelect>
                   <CFormInput
                     :id="'input'+column.field"
+                    :name="'input'+column.field"
                     type="text"
                     :disabled="column.disabled"
-                    v-model="item[column.field]"
+                    v-model="data[column.field]"
                     v-else/>
                 </CCol>
               </CRow>
-<!--              <CRow class="mb-3">-->
-<!--                <CFormLabel-->
-<!--                  for="inputPassword3"-->
-<!--                  class="col-sm-2 col-form-label"-->
-<!--                >-->
-<!--                  Password-->
-<!--                </CFormLabel>-->
-<!--                <CCol :sm="10">-->
-<!--                  <CFormInput id="inputPassword3" type="password" />-->
-<!--                </CCol>-->
-<!--              </CRow>-->
-<!--              <fieldset class="row mb-3">-->
-<!--                <legend class="col-form-label col-sm-2 pt-0">Radios</legend>-->
-<!--                <CCol :sm="10">-->
-<!--                  <CFormCheck-->
-<!--                    id="gridRadios1"-->
-<!--                    type="radio"-->
-<!--                    name="gridRadios"-->
-<!--                    value="option1"-->
-<!--                    label="First radio"-->
-<!--                    checked-->
-<!--                  />-->
-<!--                  <CFormCheck-->
-<!--                    id="gridRadios2"-->
-<!--                    type="radio"-->
-<!--                    name="gridRadios"-->
-<!--                    value="option2"-->
-<!--                    label="Second radio"-->
-<!--                  />-->
-<!--                  <CFormCheck-->
-<!--                    id="gridRadios3"-->
-<!--                    type="radio"-->
-<!--                    name="gridRadios"-->
-<!--                    value="option3"-->
-<!--                    label="Third disabled radio"-->
-<!--                    disabled-->
-<!--                  />-->
-<!--                </CCol>-->
-<!--              </fieldset>-->
-<!--              <CRow class="mb-3">-->
-<!--                <div class="col-sm-10 offset-sm-2">-->
-<!--                  <CFormCheck-->
-<!--                    id="gridCheck1"-->
-<!--                    type="checkbox"-->
-<!--                    label="Example checkbox"-->
-<!--                  />-->
-<!--                </div>-->
-<!--              </CRow>-->
               <CRow>
               <CCol :sm="4">
-              <CButton color="primary" @click="saveData">Сохранить</CButton>
+                <CButton color="primary" @click="acceptData" v-if="show_accept">Назначить</CButton>
+                <CButton
+                  v-else
+                  class="btn btn-secondary">
+                  Назначить
+                </CButton>
               </CCol>
               <CCol :sm="4">
-              <CButton @click="cancelData" color="info">Отменить</CButton>
+                <CButton @click="approveData" color="danger" v-if="show_approve">Согласовать</CButton>
+                <CButton
+                  v-else
+                  class="btn btn-secondary">
+                  Согласовать
+                </CButton>
               </CCol>
               <CCol :sm="4">
-              <CButton @click="deleteData" color="danger">Удалить</CButton>
+                <CButton @click="cancelData" color="info">Отменить</CButton>
               </CCol>
               </CRow>
             </CForm>

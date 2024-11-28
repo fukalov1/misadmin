@@ -14,6 +14,10 @@ function  rowStyleClassFn(row) {
   return row.speciality === 1 ? 'bg-green' : '';
 }
 
+function loadPdf(item) {
+  window.open(`/data/act/pdf?id=${item.number_act}&pin=${item.pin}`, '_blank')
+}
+
 </script>
 
 <template>
@@ -31,13 +35,13 @@ function  rowStyleClassFn(row) {
       :pagination-options="{
         enabled: true,
         mode: 'records',
-        perPage: 10,
+        perPage: 15,
         position: 'bottom',
-        perPageDropdown: [10, 50, 100],
+        perPageDropdown: [10, 15, 50, 100, 500],
         dropdownAllowAll: false,
         setCurrentPage: 1,
-        nextLabel: 'пред.',
-        prevLabel: 'след.',
+        nextLabel: 'след.',
+        prevLabel: 'пред.',
         rowsPerPageLabel: 'Записей на стр.',
         ofLabel: 'из',
         pageLabel: 'стр', // for 'pages' mode
@@ -48,8 +52,24 @@ function  rowStyleClassFn(row) {
           <CIcon icon="cil-pencil"
                  size="xl"
                  class="btn-action blue"
+                 title="изменение заявки"
+                 v-if="props.row.request_status_id < 5"
                  @click="$emit('enableEditMode', true, props.formattedRow)"/>
+          <CIcon icon="cil-airplay" size="xl"
+                 title="прикрепить акт к заявке"
+                 v-if="props.row.number_act===null && props.row.status == 'Согласована'"
+                 @click="$emit('attachActServiceRequest', props.formattedRow)"
+                 class="btn-action green"/>
+          <CIcon icon="cib-adobe-acrobat-reader" size="xl"
+                 title="Загрузить PDF акта"
+                 v-if="props.row.type!=='испорчен'"
+                 @click="loadPdf(props.formattedRow)"
+                 class="btn-action black"/>
           <CIcon icon="cil-x" size="xl"
+                 title="отмена заявки"
+                 v-if="!!props.row.act_id===false
+                       && (props.row.request_status_id === 2 || props.row.request_status_id === 3 ||
+                       props.row.request_status_id === 4)"
                  @click="$emit('deleteItem', props.formattedRow)"
                  class="btn-action red"/>
         </span>
@@ -80,6 +100,20 @@ function  rowStyleClassFn(row) {
   .blue:hover {
     color: #fff;
     background-color: #0033cc;
+  }
+  .black {
+    color: #000;
+  }
+  .black:hover {
+    color: #fff;
+    background-color: #000;
+  }
+  .green {
+    color: #88aa00;
+  }
+  .green:hover {
+    color: #fff;
+    background-color: #88aa00;
   }
   .bg-green {
     background-color: rgba(202, 250, 187, 0.94) !important;

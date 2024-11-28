@@ -1,4 +1,5 @@
 import {
+  cibAdobeAcrobatReader,
   cibFacebook,
   cibTwitter,
   cibLinkedin,
@@ -26,6 +27,7 @@ import {
 } from '@coreui/icons'
 import { cifUs, cifBr, cifIn, cifFr, cifEs, cifPl } from '@coreui/icons'
 import {
+  cilAirplay,
   cilArrowBottom,
   cilArrowRight,
   cilArrowTop,
@@ -87,6 +89,7 @@ import {
 export const iconsSet = Object.assign(
   {},
   {
+    cilAirplay,
     cilArrowBottom,
     cilArrowRight,
     cilArrowTop,
@@ -153,6 +156,7 @@ export const iconsSet = Object.assign(
     cifPl,
   },
   {
+    cibAdobeAcrobatReader,
     cibFacebook,
     cibTwitter,
     cibLinkedin,

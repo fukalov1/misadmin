@@ -108,22 +108,22 @@ const filters = ref([
     label: 'Пригоден',
     name: 'act_good',
     type: 'bool',
-    value: 1,
-    default: 1
+    value: true,
+    default: true
   },
   {
     label: 'Непригоден',
     name: 'act_bad',
     type: 'bool',
-    value: 1,
-    default: 1
+    value: true,
+    default: true
   },
   {
     label: 'Испорчен',
     name: 'act_brak',
     type: 'bool',
-    value: 0,
-    default: 0
+    value: false,
+    default: false
   },
 ])
 
@@ -144,6 +144,7 @@ watch(worker, () => {
 })
 
 function loadData() {
+  console.log('load data')
   process.value = false
 
   let filters_ = {
@@ -246,28 +247,28 @@ function changeEditMode(show, row) {
   visible.value = false
   if (show)
     current_row.value = row
-  if (show === false && row !== null)
-    saveItem(row)
+  // if (show === false && row !== null)
+  //   saveItem(row)
 }
 
-function saveItem(row) {
-  if (Object.keys(row)) {
-    current_row.value = row
-    axios.post(routes.users, row).then((response) => {
-      if (response.data.success === true) {
-        console.log('Success record save', Object.keys(row))
-      }
-      else {
-        console.log('Record dont save')
-      }
-    }).catch(error => {
-      console.log('Error record save')
-    })
-  }
-  else {
-    console.log('cancel  save record')
-  }
-}
+// function saveItem(row) {
+//   if (Object.keys(row)) {
+//     current_row.value = row
+//     axios.post(routes.users, row).then((response) => {
+//       if (response.data.success === true) {
+//         console.log('Success record save', Object.keys(row))
+//       }
+//       else {
+//         console.log('Record dont save')
+//       }
+//     }).catch(error => {
+//       console.log('Error record save')
+//     })
+//   }
+//   else {
+//     console.log('cancel  save record')
+//   }
+// }
 
 function deleteItem(row) {
   if (confirm('Вы точно хотите удалить act: '+row.number_act+'?')) {
@@ -303,16 +304,19 @@ function changeSort(val) {
   else {
     sort.value = []
   }
+  // console.log('change sort')
   loadData()
 }
 
 function changePage(page) {
   currentPage.value = page
+  // console.log('change page')
   loadData()
 }
 
 function changePerPage(perPage) {
   currentPerPage.value = perPage
+  // console.log('change per page')
   loadData()
 }
 

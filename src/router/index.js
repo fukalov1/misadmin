@@ -30,8 +30,8 @@ const routes = [
       },
       {
         path: '/service-requests',
-        name: 'Заявки',
-        meta: { title: 'Заявки на поверку', auth: true,
+        name: 'Заявки диспетчера поверочной лаборатории',
+        meta: { title: 'Заявки диспетчера поверочной лаборатории', auth: true,
           middleware: [
             isUser
           ]},
