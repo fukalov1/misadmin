@@ -46,6 +46,42 @@ const routes = [
           ]},
         component: () => import('@/views/pages/Acts.vue'),
       },
+      {
+        path: '/meters',
+        name: 'Поверки',
+        meta: { title: 'Поверки', auth: true,
+          middleware: [
+            isUser
+          ]},
+        component: () => import('@/views/pages/Meters.vue'),
+      },
+      {
+        path: '/statistic',
+        name: 'Статистика',
+        meta: { title: 'Статистика', auth: true,
+          middleware: [
+            isUser
+          ]},
+        component: () => import('@/views/pages/Statistic.vue'),
+      },
+      {
+        path: '/profile',
+        name: 'Профиль',
+        meta: { title: 'Профиль пользователя', auth: true,
+          middleware: [
+            isUser
+          ]},
+        component: () => import('@/views/pages/Profile.vue'),
+      },
+      {
+        path: '/support',
+        name: 'Тех.поддержка',
+        meta: { title: 'Техническая поддержка', auth: true,
+          middleware: [
+            isUser
+          ]},
+        component: () => import('@/views/pages/Support.vue'),
+      },
     ],
   },
   {

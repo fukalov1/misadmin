@@ -24,37 +24,25 @@ export default [
   {
     component: 'CNavItem',
     name: 'Поверки',
-    to: '/users',
+    to: '/meters',
     icon: 'cil-people',
   },
   {
     component: 'CNavItem',
     name: 'Статистика',
-    to: '/users',
+    to: '/statistic',
     icon: 'cil-people',
   },
   {
     component: 'CNavItem',
     name: 'Профиль',
-    to: '/users',
+    to: '/profile',
     icon: 'cil-people',
   },
   {
-    component: 'CNavGroup',
-    name: 'Справочники',
-    to: '/ServiceRequests',
-    icon: 'cil-puzzle',
-    items: [
-      {
-        component: 'CNavItem',
-        name: 'Филиалы',
-        to: '/ServiceRequests/accordion',
-      },
-      {
-        component: 'CNavItem',
-        name: 'Врачи',
-        to: '/ServiceRequests/breadcrumbs',
-      },
-    ],
+    component: 'CNavItem',
+    name: 'Тех.поддержка',
+    to: '/support',
+    icon: 'cil-people',
   },
 ]

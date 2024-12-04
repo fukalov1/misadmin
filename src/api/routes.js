@@ -3,5 +3,6 @@ export const routes = {
   service_requests: '/api/v2/service-requests',
   acts: '/api/v2/acts',
   meters: '/api/v2/meters',
+  statistic: '/api/v2/statistic',
 }
 

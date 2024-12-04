@@ -4,9 +4,9 @@ import axios from 'axios'
 import {routes} from '../../api/routes'
 import { getCookie } from '@/helpers/cookie'
 import {useUserStore} from '@/stores/user.js'
-import ActTable from '../Acts/ActTable.vue'
-import ActForm from '../Acts/ActForm.vue'
-import ActFilter from "../Acts/ActFilter.vue"
+import MeterTable from '../Meters/MeterTable.vue'
+import MeterForm from '../Meters/MeterForm.vue'
+import MeterFilter from "../Meters/MeterFilter.vue"
 
 const currentUser = useUserStore();
 
@@ -23,7 +23,7 @@ const sort = ref({})
 const columns = [
   {
     label: 'Номер',
-    field: 'number_act',
+    field: 'number',
     type: 'string',
     disabled: true
   },
@@ -46,24 +46,44 @@ const columns = [
     type: 'string',
   },
   {
-    label: 'Телефон',
-    field: 'receipt_phone',
-    type: 'phone',
+    label: 'Тип',
+    field: 'siType',
+    type: 'string',
   },
   {
-    label: 'Тип',
+    label: 'Вода',
     field: 'type',
+    type: 'string',
+  },
+  {
+    label: 'Рег. №',
+    field: 'regNumber',
+    type: 'string',
+  },
+  {
+    label: 'Заводской №',
+    field: 'serialNumber',
+    type: 'string',
+  },
+  {
+    label: 'Методика поверки',
+    field: 'checkMethod',
+    type: 'string',
+  },
+  {
+    label: 'След. поверка',
+    field: 'nextTest',
+    type: 'string',
+  },
+  {
+    label: 'Заявка',
+    field: 'serviceRequest',
     type: 'string',
   },
   {
     label: 'Адрес',
     field: 'address',
     type: 'string',
-  },
-  {
-    label: 'Выгружено в Аршин',
-    field: exportedFn,
-    type: 'number',
   },
   {
     label: '',
@@ -106,21 +126,21 @@ const filters = ref([
   },
   {
     label: 'Пригоден',
-    name: 'act_good',
+    name: 'Meter_good',
     type: 'bool',
     value: true,
     default: true
   },
   {
     label: 'Непригоден',
-    name: 'act_bad',
+    name: 'Meter_bad',
     type: 'bool',
     value: true,
     default: true
   },
   {
     label: 'Испорчен',
-    name: 'act_brak',
+    name: 'Meter_brak',
     type: 'bool',
     value: false,
     default: false
@@ -185,14 +205,14 @@ function loadData() {
     if (typeof filters_[item.name] !== "undefined" && item.name==='address') {
       filters_['address'] = item.value ?? ''
     }
-    if (typeof filters_[item.name] !== "undefined" && item.name==='act_good') {
-      filters_['act_good'] = + item.value ?? 0
+    if (typeof filters_[item.name] !== "undefined" && item.name==='Meter_good') {
+      filters_['Meter_good'] = + item.value ?? 0
     }
-    if (typeof filters_[item.name] !== "undefined" && item.name==='act_bad') {
-      filters_['act_bad'] = + item.value ?? 0
+    if (typeof filters_[item.name] !== "undefined" && item.name==='Meter_bad') {
+      filters_['Meter_bad'] = + item.value ?? 0
     }
-    if (typeof filters_[item.name] !== "undefined" && item.name==='act_brak') {
-      filters_['act_brak'] = + item.value ?? 0
+    if (typeof filters_[item.name] !== "undefined" && item.name==='Meter_brak') {
+      filters_['Meter_brak'] = + item.value ?? 0
     }
   });
   // console.log('Apply filters', filters_)
@@ -207,10 +227,10 @@ function loadData() {
   // console.log('All params', dataParams)
 
   let dataJSON = getQueryString(dataParams);
-  // console.log(`${routes.acts}/${currentUser.user.id}?${dataJSON}`);
+  // console.log(`${routes.Meters}/${currentUser.user.id}?${dataJSON}`);
 
   data.value = [];
-  axios.get(`${routes.acts}/${worker.value}?${dataJSON}`).then((response) => {
+  axios.get(`${routes.meters}/${worker.value}?${dataJSON}`).then((response) => {
     if (response.data.success === true) {
       data.value = response.data.data;
       // console.log('data', data)
@@ -247,25 +267,27 @@ function changeEditMode(show, row) {
   visible.value = false
   if (show)
     current_row.value = row
+  // if (show === false && row !== null)
+  //   saveItem(row)
 }
 
 function deleteItem(row) {
-  if (confirm('Вы точно хотите удалить act: '+row.number_act+'?')) {
+  if (confirm('Вы точно хотите удалить : '+row.number_Meter+'?')) {
     edit_mode.value = false
     current_row.value = row
-    removeAct()
+    removeMeter()
   }
 }
 
-function removeAct(item) {
+function removeMeter(item) {
   // console.log('row', current_row.value)
-    axios.delete(`${routes.acts}/${current_row.value.id}/${current_row.value.user_id}`, {})
+    axios.delete(`${routes.Meters}/${current_row.value.id}/${current_row.value.user_id}`, {})
       .then((resp) => {
         alert(resp.data.data);
         if (resp.data.success) loadData();
       })
       .catch((error) => {
-        alert('Ошибка! Акт '+item.number_act+' не удален. '+error.message);
+        alert('Ошибка! Акт '+item.number_Meter+' не удален. '+error.message);
       });
 };
 
@@ -323,14 +345,14 @@ function changePerPage(perPage) {
     <CRow>
       <CCol sm="12">
     <CCollapse :visible="visible">
-      <ActFilter
+      <MeterFilter
         @enableFilterMode="enableFilterMode"
         :filters="filters"/>
     </CCollapse>
       </CCol>
     </CRow>
 
-    <ActTable
+    <MeterTable
     :editable="true"
     :rows="data"
     :columns="columns"
@@ -340,8 +362,8 @@ function changePerPage(perPage) {
     @enableEditMode="changeEditMode"
     @DeleteItem="deleteItem"
     v-if="edit_mode===false">
-  </ActTable>
-    <ActForm
+  </MeterTable>
+    <MeterForm
     v-else
     @enableEditMode="changeEditMode"
     @DeleteItem="deleteItem"
