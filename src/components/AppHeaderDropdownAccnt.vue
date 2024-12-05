@@ -21,12 +21,12 @@ function logout() {
         component="h6"
         class="bg-body-secondary text-body-secondary fw-semibold mb-2 rounded-top"
       >
-        Account
+        Аккаунт
       </CDropdownHeader>
-      <CDropdownItem> <CIcon icon="cil-user" /> Profile </CDropdownItem>
-      <CDropdownItem> <CIcon icon="cil-settings" /> Settings </CDropdownItem>
+      <CDropdownItem @click="router.push('/profile')"> <CIcon icon="cil-user"/> Профиль </CDropdownItem>
+<!--      <CDropdownItem> <CIcon icon="cil-settings" /> Настройки </CDropdownItem>-->
       <CDropdownDivider />
-      <CDropdownItem> <CIcon icon="cil-shield-alt" /> Lock Account </CDropdownItem>
+<!--      <CDropdownItem> <CIcon icon="cil-shield-alt" /> Lock Account </CDropdownItem>-->
       <CDropdownItem @click="logout"> <CIcon icon="cil-lock-locked" /> Logout </CDropdownItem>
     </CDropdownMenu>
   </CDropdown>

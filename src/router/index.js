@@ -56,6 +56,24 @@ const routes = [
         component: () => import('@/views/pages/Meters.vue'),
       },
       {
+        path: '/payment',
+        name: 'Оплата пакетов',
+        meta: { title: 'Оплата пакетов', auth: true,
+          middleware: [
+            isUser
+          ]},
+        component: () => import('@/views/pages/Payment.vue'),
+      },
+      {
+        path: '/payments',
+        name: 'Платежи',
+        meta: { title: 'Платежи', auth: true,
+          middleware: [
+            isUser
+          ]},
+        component: () => import('@/views/pages/Payments.vue'),
+      },
+      {
         path: '/statistic',
         name: 'Статистика',
         meta: { title: 'Статистика', auth: true,
