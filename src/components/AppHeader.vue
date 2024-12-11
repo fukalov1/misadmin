@@ -29,13 +29,10 @@ onMounted(() => {
       </CHeaderToggler>
       <CHeaderNav class="d-none d-md-flex">
         <CNavItem>
-          <CNavLink href="/dashboard"> Дашбоард </CNavLink>
+          <CNavLink href="/#/dashboard"> Дашбоард </CNavLink>
         </CNavItem>
         <CNavItem>
-          <CNavLink href="#">Пользователи</CNavLink>
-        </CNavItem>
-        <CNavItem>
-          <CNavLink href="#">Настройки</CNavLink>
+          <CNavLink href="/#/profile">Профиль</CNavLink>
         </CNavItem>
       </CHeaderNav>
       <CHeaderNav class="ms-auto">

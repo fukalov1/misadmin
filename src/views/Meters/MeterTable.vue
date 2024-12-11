@@ -1,5 +1,9 @@
 <script setup>
 
+import {computed} from "vue";
+import { useColorModes } from '@coreui/vue'
+const { colorMode, setColorMode } = useColorModes('coreui-free-vue-admin-template-theme')
+
 const { editable, rows } = defineProps(['editable', 'rows', 'columns', 'sort'])
 const emit = defineEmits(['enableEditMode', 'deleteItem', 'changePage', 'changePerPage', 'changeSort'])
 
@@ -23,6 +27,10 @@ function loadPdf(item) {
   window.open(`/data/act/pdf?id=${item.number_act}&pin=${item.pin}`, '_blank')
 }
 
+const theme = computed(() => {
+  return colorMode.value === 'dark' ? 'nocturnal' : ''
+})
+
 </script>
 
 <template>
@@ -31,6 +39,7 @@ function loadPdf(item) {
       mode="remote"
       :totalRows="155"
       :columns="columns"
+      :theme="theme"
       :rows="rows"
       v-on:sort-change="onSortChange"
       v-on:page-change="onPageChange"

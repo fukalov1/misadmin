@@ -1,7 +1,16 @@
 <script setup>
 
+import {computed} from "vue";
+
+import { useColorModes } from '@coreui/vue'
+const { colorMode, setColorMode } = useColorModes('coreui-free-vue-admin-template-theme')
+
 const { editable, rows } = defineProps(['editable', 'rows', 'columns'])
 const emit = defineEmits(['enableEditMode', 'cancelServiceRequest', 'attachActServiceRequest'])
+
+// watch( colorMode.value, () => {
+//   console.log('current theme ', currentTheme.theme, colorMode)
+// })
 
 // const props = defineProps({
 //   columns: {
@@ -9,6 +18,11 @@ const emit = defineEmits(['enableEditMode', 'cancelServiceRequest', 'attachActSe
 //     required: true
 //   }
 // })
+
+const theme = computed(() => {
+  return colorMode.value === 'dark' ? 'nocturnal' : ''
+})
+
 
 function  rowStyleClassFn(row) {
   return row.speciality === 1 ? 'bg-green' : '';
@@ -41,7 +55,7 @@ function cancelServiceRequest(item) {
     <vue-good-table
       :columns="columns"
       :rows="rows"
-      theme="dark"
+      :theme="theme"
       styleClass="vgt-table condensed striped"
       :row-style-class="rowStyleClassFn"
       :sort-options="{

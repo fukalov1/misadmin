@@ -4,43 +4,25 @@ import {computed} from "vue";
 import { useColorModes } from '@coreui/vue'
 const { colorMode, setColorMode } = useColorModes('coreui-free-vue-admin-template-theme')
 
-const { editable, rows } = defineProps(['editable', 'rows', 'columns', 'sort'])
-const emit = defineEmits(['enableEditMode', 'deleteItem', 'changePage', 'changePerPage', 'changeSort'])
+const { editable, rows } = defineProps(['editable', 'rows', 'columns'])
+const emit = defineEmits(['enableEditMode', 'cancelAgent', 'showServiceRequest'])
 
 function  rowStyleClassFn(row) {
-  return row.exported === 1 ? 'bg-green' : '';
+  // return row.enabled === 1 ? 'bg-green' : '';
 }
 
 const theme = computed(() => {
   return colorMode.value === 'dark' ? 'nocturnal' : ''
 })
 
-function onSortChange(params) {
-  emit('changeSort', params)
-}
-
-function onPageChange(params) {
-  emit('changePage', params.currentPage)
-}
-
-function onPerPageChange(params) {
-  emit('changePerPage',  params.currentPerPage)
-}
-
 </script>
 
 <template>
   <div>
     <vue-good-table
-      mode="remote"
-      :totalRows="155"
       :columns="columns"
-      :theme="theme"
       :rows="rows"
-      v-on:sort-change="onSortChange"
-      v-on:page-change="onPageChange"
-      v-on:per-page-change="onPerPageChange"
-      theme="dark"
+      :theme="theme"
       styleClass="vgt-table condensed striped"
       :row-style-class="rowStyleClassFn"
       :sort-options="{
@@ -62,20 +44,17 @@ function onPerPageChange(params) {
         pageLabel: 'стр', // for 'pages' mode
         allLabel: 'All'}"
     >
-      <template #emptystate>
-        Нет данных
-      </template>
       <template #table-row="props">
         <span v-if="props.column.field == 'id' && editable">
           <CIcon icon="cil-pencil"
                  size="xl"
                  class="btn-action blue"
-                 @click="$emit('enableEditMode', true, props.row)"/>
-          <CIcon icon="cil-x" size="xl"
-                 @click="$emit('deleteItem', props.row)"
-                 class="btn-action red"
-                 v-if="props.row.exported===0"
-          />
+                 title="изменение агента"
+                 @click="$emit('enableEditMode', true, props.formattedRow)"/>
+          <CIcon icon="cil-info" size="xl"
+                 title="заявки агента"
+                 @click="$emit('showServiceRequest', props.row)"
+                 class="btn-action green"/>
         </span>
         <span v-else>
           {{props.formattedRow[props.column.field]}}
@@ -104,6 +83,20 @@ function onPerPageChange(params) {
   .blue:hover {
     color: #fff;
     background-color: #0033cc;
+  }
+  .black {
+    color: #000;
+  }
+  .black:hover {
+    color: #fff;
+    background-color: #000;
+  }
+  .green {
+    color: #88aa00;
+  }
+  .green:hover {
+    color: #fff;
+    background-color: #88aa00;
   }
   .bg-green {
     background-color: rgba(202, 250, 187, 0.94) !important;
