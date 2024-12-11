@@ -126,21 +126,21 @@ const filters = ref([
   },
   {
     label: 'Пригоден',
-    name: 'Meter_good',
+    name: 'act_good',
     type: 'bool',
     value: true,
     default: true
   },
   {
     label: 'Непригоден',
-    name: 'Meter_bad',
+    name: 'act_bad',
     type: 'bool',
     value: true,
     default: true
   },
   {
     label: 'Испорчен',
-    name: 'Meter_brak',
+    name: 'act_brak',
     type: 'bool',
     value: false,
     default: false
@@ -164,57 +164,10 @@ watch(worker, () => {
 })
 
 function loadData() {
-  console.log('load data')
+  // console.log('load data')
   process.value = false
 
-  let filters_ = {
-    dateRange: {
-      startDate: '',
-      endDate: ''
-    },
-    number: '',
-    serialNumber: '',
-    address: '',
-    act_good: 1,
-    act_bad: 1,
-    act_brak: 0,
-  };
-  filters.value.forEach(function(item) {
-    if (item.name==='dateRange') {
-      if (item.value[0]) {
-        let day = item.value[0].getDate()
-        day = day < 10 ? '0'+day : day
-        let month = item.value[0].getMonth()+1
-        month = month < 10 ? '0'+month : month
-        filters_.dateRange['startDate'] = item.value[0].getFullYear() + '-' + month + '-' + day
-      }
-      if (item.value[1]) {
-        let day = item.value[1].getDate()
-        day = day < 10 ? '0'+day : day
-        let month = item.value[1].getMonth()+1
-        month = month < 10 ? '0'+month : month
-        filters_.dateRange['endDate'] = item.value[1].getFullYear() + '-' + month + '-' + day
-      }
-    }
-    if (typeof filters_[item.name] !== "undefined" && item.name==='number') {
-      filters_['number'] = item.value ?? ''
-    }
-    if (typeof filters_[item.name] !== "undefined" && item.name==='serialNumber') {
-      filters_['number'] = item.value ?? ''
-    }
-    if (typeof filters_[item.name] !== "undefined" && item.name==='address') {
-      filters_['address'] = item.value ?? ''
-    }
-    if (typeof filters_[item.name] !== "undefined" && item.name==='Meter_good') {
-      filters_['Meter_good'] = + item.value ?? 0
-    }
-    if (typeof filters_[item.name] !== "undefined" && item.name==='Meter_bad') {
-      filters_['Meter_bad'] = + item.value ?? 0
-    }
-    if (typeof filters_[item.name] !== "undefined" && item.name==='Meter_brak') {
-      filters_['Meter_brak'] = + item.value ?? 0
-    }
-  });
+  let filters_ = prepareFilters()
   // console.log('Apply filters', filters_)
 
   let dataParams = {
@@ -250,6 +203,58 @@ function loadData() {
 
 function exportedFn(row) {
   return row.exported===0 ? '' : 'да';
+}
+
+function prepareFilters() {
+  let filters_ = {
+    dateRange: {
+      startDate: '',
+      endDate: ''
+    },
+    number: '',
+    serialNumber: '',
+    address: '',
+    act_good: 1,
+    act_bad: 1,
+    act_brak: 0,
+  };
+  filters.value.forEach(function(item) {
+    if (item.name==='dateRange') {
+      if (item.value[0]) {
+        let day = item.value[0].getDate()
+        day = day < 10 ? '0'+day : day
+        let month = item.value[0].getMonth()+1
+        month = month < 10 ? '0'+month : month
+        filters_.dateRange['startDate'] = item.value[0].getFullYear() + '-' + month + '-' + day
+      }
+      if (item.value[1]) {
+        let day = item.value[1].getDate()
+        day = day < 10 ? '0'+day : day
+        let month = item.value[1].getMonth()+1
+        month = month < 10 ? '0'+month : month
+        filters_.dateRange['endDate'] = item.value[1].getFullYear() + '-' + month + '-' + day
+      }
+    }
+    if (typeof filters_[item.name] !== "undefined" && item.name==='number') {
+      filters_['number'] = item.value ?? ''
+    }
+    if (typeof filters_[item.name] !== "undefined" && item.name==='serialNumber') {
+      filters_['serialNumber'] = item.value ?? ''
+    }
+    if (typeof filters_[item.name] !== "undefined" && item.name==='address') {
+      filters_['address'] = item.value ?? ''
+    }
+    if (typeof filters_[item.name] !== "undefined" && item.name==='act_good') {
+      filters_['act_good'] = item.value ? 1 : 0
+    }
+    if (typeof filters_[item.name] !== "undefined" && item.name==='act_bad') {
+      filters_['act_bad'] = item.value ? 1 : 0
+    }
+    if (typeof filters_[item.name] !== "undefined" && item.name==='act_brak') {
+      filters_['act_brak'] = item.value ? 1 : 0
+    }
+  })
+  return filters_
 }
 
 function getQueryString(obj, path = '') {
@@ -291,6 +296,20 @@ function removeMeter(item) {
       });
 };
 
+function exportExcel() {
+  let filters_ = prepareFilters()
+  axios.post(`/api/export/excel/meters/${worker.value}`,
+    {
+      filters: filters_,
+    })
+    .then((resp) => {
+      // console.log('file', resp.data);
+      let filename = resp.data.data;
+      if (filename && filename !== undefined)
+        window.open(`https://pin.poverkadoma.ru/get-file?filename=${filename}`, '_blank');
+    });
+
+}
 
 function enableFilterMode() {
   // console.log('change filters ', filters)
@@ -341,7 +360,16 @@ function changePerPage(perPage) {
         </CCol>
       </CRow>
     <br/>
-    <CButton color="primary" @click="visible = !visible" class="mb-3 right">Фильтр</CButton>
+    <CRow>
+      <CCol sm="2">
+        <CButton color="primary" @click="visible = !visible" class="mb-3 right">Фильтр</CButton>
+      </CCol>
+      <CCol sm="8">
+      </CCol>
+      <CCol sm="2">
+        <CButton color="info" @click="exportExcel()" class="mb-3 right">Экспорт в Excel</CButton>
+      </CCol>
+    </CRow>
     <CRow>
       <CCol sm="12">
     <CCollapse :visible="visible">

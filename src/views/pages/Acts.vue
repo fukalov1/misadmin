@@ -91,8 +91,8 @@ const filters = ref([
     default: null
   },
   {
-    label: 'Заводской номер СИ',
-    name: 'serialNumber',
+    label: 'Клиент',
+    name: 'miowner',
     type: 'text',
     value: null,
     default: null
@@ -153,7 +153,7 @@ function loadData() {
       endDate: ''
     },
     number: '',
-    serialNumber: '',
+    miowner: '',
     address: '',
     act_good: 1,
     act_bad: 1,
@@ -179,20 +179,21 @@ function loadData() {
     if (typeof filters_[item.name] !== "undefined" && item.name==='number') {
       filters_['number'] = item.value ?? ''
     }
-    if (typeof filters_[item.name] !== "undefined" && item.name==='serialNumber') {
-      filters_['number'] = item.value ?? ''
+    if (typeof filters_[item.name] !== "undefined" && item.name==='miowner') {
+      filters_['miowner'] = item.value ?? ''
     }
     if (typeof filters_[item.name] !== "undefined" && item.name==='address') {
       filters_['address'] = item.value ?? ''
     }
     if (typeof filters_[item.name] !== "undefined" && item.name==='act_good') {
-      filters_['act_good'] = + item.value ?? 0
+      filters_['act_good'] = item.value ? 1 : 0
     }
+
     if (typeof filters_[item.name] !== "undefined" && item.name==='act_bad') {
-      filters_['act_bad'] = + item.value ?? 0
+      filters_['act_bad'] = item.value ? 1 : 0
     }
     if (typeof filters_[item.name] !== "undefined" && item.name==='act_brak') {
-      filters_['act_brak'] = + item.value ?? 0
+      filters_['act_brak'] = item.value ? 1 : 0
     }
   });
   // console.log('Apply filters', filters_)

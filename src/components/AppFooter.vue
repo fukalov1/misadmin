@@ -1,14 +1,52 @@
+<script setup>
+import {computed} from 'vue'
+import {APP_VERSION} from "@/environments/app-version";
+import router from '@/router'
+import {useUserStore} from '@/stores/user.js'
+const currentUser = useUserStore();
+
+const isResponsible = computed(() => {
+  if (currentUser.roles)
+    return currentUser.roles.indexOf(2)==-1 ? false : true;
+  else
+    return false
+})
+
+</script>
+
 <template>
   <CFooter class="px-4">
     <div>
-      <a href="https://coreui.io" target="_blank">МС-Ресурс</a>
+      <a href="https://poverkadoma.ru" target="_blank">МС-Ресурс</a>
       <span class="ms-1"
         >&copy; {{ new Date().getFullYear() }} Все права защищены.</span
       >
     </div>
     <div class="ms-auto">
-      <span class="me-1" target="_blank">Разработано</span>
-      <a href="https://coreui.io/vue">FaiLabs</a>
+      <span @click="router.push('/pages/privacy')">Политика конфиденциальности</span> |
+      <span @click="router.push('/pages/info')">Условия пользования платными услугами </span> |
+      <span @click="router.push('/pages/offer')" v-if="isResponsible">Оферта</span>
+      {{ APP_VERSION }}
     </div>
+    <div class="pay-sys">
+              <ul>
+                <li><span class="mastercard"></span>
+                </li>
+                <li><span class="paykeeper"></span>
+                </li>
+                <li>
+                  <span class="visa"></span>
+                </li>
+                <li>
+                  <span class="mir"></span>
+                </li>
+                <li>
+                  <span class="sb"></span>
+                </li>
+                <li>
+                  <span class="cbp"></span>
+                </li>
+              </ul>
+            </div>
   </CFooter>
 </template>
