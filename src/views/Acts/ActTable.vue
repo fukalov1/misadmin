@@ -8,7 +8,10 @@ const { editable, rows } = defineProps(['editable', 'rows', 'columns', 'sort'])
 const emit = defineEmits(['enableEditMode', 'deleteItem', 'changePage', 'changePerPage', 'changeSort'])
 
 function  rowStyleClassFn(row) {
-  return row.exported === 1 ? 'bg-green' : '';
+  if (theme.value === 'nocturnal' )
+    return row.exported === 1 ? 'bg-green-dark' : '';
+  else
+    return row.exported === 1 ? 'bg-green' : '';
 }
 
 const theme = computed(() => {
@@ -40,7 +43,6 @@ function onPerPageChange(params) {
       v-on:sort-change="onSortChange"
       v-on:page-change="onPageChange"
       v-on:per-page-change="onPerPageChange"
-      theme="dark"
       styleClass="vgt-table condensed striped"
       :row-style-class="rowStyleClassFn"
       :sort-options="{
@@ -107,6 +109,9 @@ function onPerPageChange(params) {
   }
   .bg-green {
     background-color: rgba(202, 250, 187, 0.94) !important;
+  }
+  .bg-green-dark {
+    background-color: rgba(82, 121, 70, 0.94) !important;
   }
 
 </style>

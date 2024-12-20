@@ -31,11 +31,11 @@ onMounted(() => {
   axios.post(`/api/get-statistic-total`).then((response) => {
     if (response.data.success === true) {
       data = response.data.data;
-      console.log('data', data)
+      // console.log('data', data)
     }
 
     process.value = true
-    console.log('Process', process)
+    // console.log('Process', process)
   }).catch(error => {
     console.log('Error get record ', error)
     if (error.response.data.status===400) {
@@ -43,13 +43,13 @@ onMounted(() => {
     }
     process.value = true
   })
-  console.log('Process', process)
+  // console.log('Process', process)
 })
 
 </script>
 
 <template>
   <div v-if="process">
-    <CChartBar height="400" width="1100" :data="data" />
+    <CChartBar :data="data" />
   </div>
 </template>

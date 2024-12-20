@@ -57,12 +57,16 @@ function resetData() {
               <VueDatePicker
                 v-model="filter.value"
                 locale="ru"
+                select-text="Выбрать"
+                cancel-text="Закрыть"
                 :format="format"
                 v-else-if="filter.type==='daterange'"
                 range />
               <VueDatePicker
                 locale="ru"
                 v-model="filter.value"
+                select-text="Выбрать"
+                cancel-text="Закрыть"
                 v-else-if="filter.type==='date'">
               </VueDatePicker>
 <!--              <CFormSelect :aria-label="filter.label" v-else-if="filter.type==='options'" v-model="filter.value]">-->

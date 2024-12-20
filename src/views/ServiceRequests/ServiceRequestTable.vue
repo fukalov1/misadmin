@@ -23,10 +23,13 @@ const theme = computed(() => {
   return colorMode.value === 'dark' ? 'nocturnal' : ''
 })
 
-
 function  rowStyleClassFn(row) {
-  return row.speciality === 1 ? 'bg-green' : '';
+  if (theme.value === 'nocturnal' )
+    return row.speciality === 1 ? 'bg-green-dark' : '';
+  else
+    return row.speciality === 1 ? 'bg-green' : '';
 }
+
 
 function loadPdf(item) {
   window.open(`/data/act/pdf?id=${item.number_act}&pin=${item.pin}`, '_blank')
@@ -148,5 +151,9 @@ function cancelServiceRequest(item) {
   .bg-green {
     background-color: rgba(202, 250, 187, 0.94) !important;
   }
+  .bg-green-dark {
+    background-color: rgba(82, 121, 70, 0.94) !important;
+  }
+
 
 </style>

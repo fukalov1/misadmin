@@ -29,10 +29,15 @@ onMounted(() => {
       </CHeaderToggler>
       <CHeaderNav class="d-none d-md-flex">
         <CNavItem>
-          <CNavLink href="/#/dashboard"> Дашбоард </CNavLink>
+          <CNavLink href="/#/dashboard">  МС-Ресурс - информационная система поверок счетчиков воды. </CNavLink>
         </CNavItem>
+<!--        <CNavItem>-->
+<!--          <CNavLink href="/#/profile">Профиль</CNavLink>-->
+<!--        </CNavItem>-->
         <CNavItem>
-          <CNavLink href="/#/profile">Профиль</CNavLink>
+          <CNavLink href="https://pin.poverkadoma.ru" class="text-danger">
+            Старая версия личного кабинета
+          </CNavLink>
         </CNavItem>
       </CHeaderNav>
       <CHeaderNav class="ms-auto">
@@ -53,9 +58,9 @@ onMounted(() => {
         </CNavItem>
       </CHeaderNav>
       <CHeaderNav>
-        <li class="nav-item py-1">
-          <div class="vr h-100 mx-2 text-body text-opacity-75"></div>
-        </li>
+<!--        <li class="nav-item py-1">-->
+<!--          <div class="vr h-100 mx-2 text-body text-opacity-75"></div>-->
+<!--        </li>-->
         <CDropdown variant="nav-item" placement="bottom-end">
           <CDropdownToggle :caret="false">
             <CIcon v-if="colorMode === 'dark'" icon="cil-moon" size="lg" />

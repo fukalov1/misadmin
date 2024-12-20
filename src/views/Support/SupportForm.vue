@@ -7,7 +7,7 @@ import {useUserStore} from '@/stores/user.js'
 
 const currentUser = useUserStore()
 
-const emit = defineEmits(['refresh-list'])
+const emit = defineEmits(['refreshList'])
 
 const file = ref(null)
 
@@ -27,7 +27,7 @@ const resetForm = () => {
 
 const sendQuest = async () => {
       try {
-        console.log('file', file.value)
+        // console.log('file', file.value)
         if ((message.value===null || message.value.length < 5) && file.value===null) {
           alert('Ошибка отправки вопроса! Сообщение не может быть пустым.')
         }
@@ -45,8 +45,8 @@ const sendQuest = async () => {
           // console.log(response.data);
           if (response.data.success) {
             alert('Вопрос успешно отправлен')
-            message.value = data.file = null;
-            emit('refresh-list')
+            message.value = null;
+            emit('refreshList')
             resetForm()
           } else {
             alert('Ошибка отправки вопроса!')

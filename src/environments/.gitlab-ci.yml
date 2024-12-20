@@ -1,0 +1,12 @@
+stages:
+  - deploy
+
+
+Deploy to prod:
+  stage: deploy
+  script:
+    - echo "Project name ${CI_PROJECT_NAME} from branche ${CI_COMMIT_REF_SLUG} [stage ${CO_JOB_STAGE}]" >> ~/build.txt
+    - ssh -tt gitlab-runner@5.188.119.218 "cd /projects/msr-lk && git checkout . && git pull"
+    - echo "Deploy to lk success"
+  tags:
+    - ssh

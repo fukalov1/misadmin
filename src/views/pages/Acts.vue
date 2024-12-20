@@ -30,7 +30,7 @@ const columns = [
   {
     label: 'Дата создания',
     field: 'created_at1',
-    type: 'date',
+    type: 'string',
     dateInputFormat: 'yyyy-MM-dd',
     dateOutputFormat: 'yyy-MM-dd',
     disabled: true

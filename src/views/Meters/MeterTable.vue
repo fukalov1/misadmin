@@ -8,7 +8,10 @@ const { editable, rows } = defineProps(['editable', 'rows', 'columns', 'sort'])
 const emit = defineEmits(['enableEditMode', 'deleteItem', 'changePage', 'changePerPage', 'changeSort'])
 
 function  rowStyleClassFn(row) {
-  return row.exported === 1 ? 'bg-green' : '';
+  if (theme.value === 'nocturnal' )
+    return row.exported === 1 ? 'bg-green-dark' : '';
+  else
+    return row.exported === 1 ? 'bg-green' : '';
 }
 
 function onSortChange(params) {
@@ -111,6 +114,9 @@ const theme = computed(() => {
   }
   .bg-green {
     background-color: rgba(202, 250, 187, 0.94) !important;
+  }
+  .bg-green-dark {
+    background-color: rgba(82, 121, 70, 0.94) !important;
   }
 
 </style>

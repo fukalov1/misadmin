@@ -15,7 +15,7 @@ const payment_types = ref([
   'Оплата через СБП. Мгновенное зачисление. Комиссия банка 0,7%',
   'Оплата картой. Мгновенное зачисление. Комиссия банка ',
   'На банковскую карту',
-  'Безналичный перевод на счёт. <strong>Зачисление 1-2 раб. дня</strong>. Без комиссии',
+  'Безналичный перевод на счет. <strong>Зачисление 1-2 раб. дня</strong>. Без комиссии',
   'Другое. Свяжитесь с менеджером для уточнения способа оплаты']);
 
 const payment_type = ref( 0)
@@ -315,7 +315,7 @@ onMounted(() => {
                     <CCardFooter v-if="amount">
                       <div class="text-primary">
                         К оплате: {{ amount }} руб.<span v-if="payment_type<2">*</span>
-                        <div v-if="payment_type < 2" class="text-dark">* Сумма включает в себя комиссию банка.
+                        <div v-if="payment_type < 2">* Сумма включает в себя комиссию банка.
                           После успешной оплаты чек будет автоматически выслан на {{ currentUser.user.email}}<br/>
                           По всем вопросам, пожалуйста, обратитесь к менеджеру по телефону: <a href="tel:+79608374000">+7 (960) 837-40-00</a> или через мессенджеры
                           <ul class="cib-messenger">
@@ -334,7 +334,7 @@ onMounted(() => {
                       </div>
                       <p>
                         Перед совершением покупки просим Вас ознакомиться с условиями договора оферты. Нажимая кнопку "Оплатить",
-                        Вы подтверждаете своё согласие с <router-link to="/pages/offer">условиями оферты</router-link>.
+                        Вы подтверждаете свое согласие с <a href="http://localhost:3000/#/pages/offer" target="_blank">условиями оферты</a>.
                       </p>
                       <div v-if="payment_type < 2">
                         <CButton color="info" class="mb-2" @click="sendPayment">
@@ -352,13 +352,11 @@ onMounted(() => {
                         <div v-if="payment_type === 3">
                           Оплатите безналичный перевод
                           <a target="_blank"
-                             :href="`/get-file/bill-payment/${currentUser.user.partner.code}/${count}/${price}`">
-                            по счету
-                          </a>
-                          , прикрепите чек  и затем нажмите кнопку <b>Оплачено.</b>
+                             :href="`https://pin.poverkadoma.ru/get-file/bill-payment/${currentUser.user.partner.code}/${count}/${price}`">
+                            по счету</a>, прикрепите чек  и затем нажмите кнопку <b>Оплачено.</b>
                           <br/><br/>
                           <label>Комментарий к платежу</label>
-                          <CTextarea v-model="comment"></CTextarea>
+                          <CFormTextarea v-model="comment"></CFormTextarea>
                         </div>
                         <div v-else-if="payment_type === 4">
                           Прикрепите чек об оплате суммы <b>{{ price }} руб </b>и затем нажмите кнопку <b>Оплачено.</b>
@@ -380,12 +378,13 @@ onMounted(() => {
                           </ul>
                           <br/><br/>
                           <label>Комментарий к платежу</label>
-                          <CTextarea v-model="comment"></CTextarea>
+                          <CFormTextarea v-model="comment"></CFormTextarea>
                         </div>
                         <form novalidate @submit.prevent="submitFile">
-                          <input
+                          <CFormInput
                             type="file"
                             name="file"
+                            label="Фото либо PDF чека об оплате"
                             @change="uploadFile($event)"
                           />
                           <!--                        <button type="submit" class="btn btn-info">Отправить</button>-->

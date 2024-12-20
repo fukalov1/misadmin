@@ -22,7 +22,7 @@ const currentPerPage = ref(15)
 
 const columns = [
   {
-    label: 'Id',
+    label: 'Номер',
     field: 'id',
     type: 'string',
     disabled: false,
@@ -58,7 +58,7 @@ const columns = [
   {
     label: 'Кол-во поверок',
     field: 'count_meters',
-    type: 'number',
+    type: 'string',
     disabled: true,
     showForm: true
 
