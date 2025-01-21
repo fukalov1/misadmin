@@ -4,7 +4,7 @@ import {computed} from "vue";
 import { useColorModes } from '@coreui/vue'
 const { colorMode, setColorMode } = useColorModes('coreui-free-vue-admin-template-theme')
 
-const { editable, rows } = defineProps(['editable', 'rows', 'columns', 'sort'])
+const { editable, rows } = defineProps(['editable', 'rows', 'count', 'columns', 'sort'])
 const emit = defineEmits(['enableEditMode', 'deleteItem', 'changePage', 'changePerPage', 'changeSort'])
 
 function  rowStyleClassFn(row) {
@@ -27,7 +27,7 @@ function onPerPageChange(params) {
 }
 
 function loadPdf(item) {
-  window.open(`/data/act/pdf?id=${item.number_act}&pin=${item.pin}`, '_blank')
+  window.open(`https://pin.poverkadoma.ru/data/act/pdf?id=${item.act.number_act}&pin=${item.act.pin}`, '_blank')
 }
 
 const theme = computed(() => {
@@ -40,7 +40,7 @@ const theme = computed(() => {
   <div>
     <vue-good-table
       mode="remote"
-      :totalRows="155"
+      :totalRows="count"
       :columns="columns"
       :theme="theme"
       :rows="rows"
@@ -56,7 +56,7 @@ const theme = computed(() => {
       }"
       :pagination-options="{
         enabled: true,
-        mode: 'records',
+        mode: 'pages',
         perPage: 15,
         position: 'bottom',
         perPageDropdown: [10, 15, 50, 100, 500],
@@ -81,7 +81,7 @@ const theme = computed(() => {
          <CIcon icon="cib-adobe-acrobat-reader" size="xl"
                 title="Загрузить PDF акта"
                 v-if="props.row.type!=='испорчен'"
-                @click="loadPdf(props.formattedRow)"
+                @click="loadPdf(props.row)"
                 class="btn-action black"/>
         </span>
         <span v-else>

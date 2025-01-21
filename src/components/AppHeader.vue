@@ -35,26 +35,26 @@ onMounted(() => {
 <!--          <CNavLink href="/#/profile">Профиль</CNavLink>-->
 <!--        </CNavItem>-->
         <CNavItem>
-          <CNavLink href="https://pin.poverkadoma.ru" class="text-danger">
-            Старая версия личного кабинета
-          </CNavLink>
+  <!--          <CNavLink href="https://pin.poverkadoma.ru" class="text-danger">-->
+  <!--            Старая версия личного кабинета-->
+  <!--          </CNavLink>-->
         </CNavItem>
       </CHeaderNav>
       <CHeaderNav class="ms-auto">
         <CNavItem>
-          <CNavLink href="#">
-            <CIcon icon="cil-bell" size="lg" />
+          <CNavLink href="https://pin.poverkadoma.ru" class="text-danger" title="Старая версия личного кабинета">
+            <CIcon icon="cil-grid" size="lg" />
           </CNavLink>
-        </CNavItem>
-        <CNavItem>
-          <CNavLink href="#">
-            <CIcon icon="cil-list" size="lg" />
-          </CNavLink>
-        </CNavItem>
-        <CNavItem>
-          <CNavLink href="#">
-            <CIcon icon="cil-envelope-open" size="lg" />
-          </CNavLink>
+<!--        </CNavItem>-->
+<!--        <CNavItem>-->
+<!--          <CNavLink href="#">-->
+<!--            <CIcon icon="cil-list" size="lg" />-->
+<!--          </CNavLink>-->
+<!--        </CNavItem>-->
+<!--        <CNavItem>-->
+<!--          <CNavLink href="#">-->
+<!--            <CIcon icon="cil-envelope-open" size="lg" />-->
+<!--          </CNavLink>-->
         </CNavItem>
       </CHeaderNav>
       <CHeaderNav>

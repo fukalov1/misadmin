@@ -5,12 +5,13 @@ import {routes} from '../../api/routes'
 import { getCookie } from '@/helpers/cookie'
 import {useUserStore} from '@/stores/user.js'
 import MeterTable from '../Meters/MeterTable.vue'
-import MeterForm from '../Meters/MeterForm.vue'
+import MeterModal from '../Meters/MeterModal.vue'
 import MeterFilter from "../Meters/MeterFilter.vue"
 
 const currentUser = useUserStore();
 
 const data = ref([])
+const count = ref(0)
 const process = ref(false);
 const edit_mode = ref(false)
 const current_row = ref({})
@@ -155,7 +156,6 @@ onMounted(() => {
   }
   if (worker.value===null)
     worker.value = currentUser.user.id
-  loadData()
 })
 
 watch(worker, () => {
@@ -183,21 +183,24 @@ function loadData() {
   // console.log(`${routes.Meters}/${currentUser.user.id}?${dataJSON}`);
 
   data.value = [];
-  axios.get(`${routes.meters}/${worker.value}?${dataJSON}`).then((response) => {
-    if (response.data.success === true) {
-      data.value = response.data.data;
-      // console.log('data', data)
-    }
+  if (worker.value) {
+    axios.get(`${routes.meters}/${worker.value}?${dataJSON}`).then((response) => {
+      if (response.data.success === true) {
+        data.value = response.data.data
+        count.value = response.data.count
+        // console.log('data', data)
+      }
 
-    process.value = true
-    // console.log('Process', process)
-  }).catch(error => {
-    // console.log('Error get record ', error)
-    if (error.response.data.status===400) {
-      currentUser.logout();
-    }
-    process.value = true
-  })
+      process.value = true
+      // console.log('Process', process)
+    }).catch(error => {
+      // console.log('Error get record ', error)
+      if (error.response.data.status === 400) {
+        currentUser.logout();
+      }
+      process.value = true
+    })
+  }
   // console.log('Process', process)
 }
 
@@ -383,19 +386,19 @@ function changePerPage(perPage) {
     <MeterTable
     :editable="true"
     :rows="data"
+    :count="count"
     :columns="columns"
     @changeSort="changeSort"
     @changePage="changePage"
     @changePerPage="changePerPage"
     @enableEditMode="changeEditMode"
     @DeleteItem="deleteItem"
-    v-if="edit_mode===false">
+    v-show="!edit_mode">
   </MeterTable>
-    <MeterForm
-    v-else
+  <MeterModal
+    v-if="edit_mode"
     @enableEditMode="changeEditMode"
-    @DeleteItem="deleteItem"
-    :columns="columns"
+    @hide-document="edit_mode.value=false"
     :item="current_row"/>
   </div>
 </template>

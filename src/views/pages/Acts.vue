@@ -5,12 +5,13 @@ import {routes} from '../../api/routes'
 import { getCookie } from '@/helpers/cookie'
 import {useUserStore} from '@/stores/user.js'
 import ActTable from '../Acts/ActTable.vue'
-import ActForm from '../Acts/ActForm.vue'
 import ActFilter from "../Acts/ActFilter.vue"
+import ActModal from "../Acts/ActModal.vue"
 
 const currentUser = useUserStore();
 
 const data = ref([])
+const count = ref(0)
 const process = ref(false);
 const edit_mode = ref(false)
 const current_row = ref({})
@@ -135,7 +136,7 @@ onMounted(() => {
   }
   if (worker.value===null)
     worker.value = currentUser.user.id
-  loadData()
+  // loadData()
 })
 
 watch(worker, () => {
@@ -211,21 +212,24 @@ function loadData() {
   // console.log(`${routes.acts}/${currentUser.user.id}?${dataJSON}`);
 
   data.value = [];
-  axios.get(`${routes.acts}/${worker.value}?${dataJSON}`).then((response) => {
-    if (response.data.success === true) {
-      data.value = response.data.data;
-      // console.log('data', data)
-    }
+  if (worker.value) {
+    axios.get(`${routes.acts}/${worker.value}?${dataJSON}`).then((response) => {
+      if (response.data.success === true) {
+        data.value = response.data.data
+        count.value = response.data.count
+        // console.log('data', data)
+      }
 
-    process.value = true
-    // console.log('Process', process)
-  }).catch(error => {
-    // console.log('Error get record ', error)
-    if (error.response.data.status===400) {
-      currentUser.logout();
-    }
-    process.value = true
-  })
+      process.value = true
+      // console.log('Process', process)
+    }).catch(error => {
+      // console.log('Error get record ', error)
+      if (error.response.data.status === 400) {
+        currentUser.logout();
+      }
+      process.value = true
+    })
+  }
   // console.log('Process', process)
 }
 
@@ -335,18 +339,19 @@ function changePerPage(perPage) {
     :editable="true"
     :rows="data"
     :columns="columns"
+    :count="count"
     @changeSort="changeSort"
     @changePage="changePage"
     @changePerPage="changePerPage"
     @enableEditMode="changeEditMode"
     @DeleteItem="deleteItem"
-    v-if="edit_mode===false">
+    v-show="!edit_mode">
   </ActTable>
-    <ActForm
-    v-else
+  <ActModal
+    v-if="edit_mode"
+    @hide-document="edit_mode.value=false"
     @enableEditMode="changeEditMode"
-    @DeleteItem="deleteItem"
-    :columns="columns"
-    :item="current_row"/>
+    :item="current_row"
+  />
   </div>
 </template>

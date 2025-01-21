@@ -22,7 +22,8 @@ const uploadFile = (event) => {
 
 const resetForm = () => {
       document.getElementById("uploadForm").reset();
-      message.value = null;
+      message.value = null
+      file.value = null
 }
 
 const sendQuest = async () => {
@@ -45,7 +46,6 @@ const sendQuest = async () => {
           // console.log(response.data);
           if (response.data.success) {
             alert('Вопрос успешно отправлен')
-            message.value = null;
             emit('refreshList')
             resetForm()
           } else {

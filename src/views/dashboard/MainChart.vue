@@ -1,9 +1,8 @@
 <script setup>
 import { CChartBar } from '@coreui/vue-chartjs'
 import { ref, onMounted } from 'vue'
-import axios from 'axios'
-import {routes} from '../../api/routes'
 import { getCookie } from '@/helpers/cookie'
+import axios from "axios";
 import {useUserStore} from '@/stores/user.js'
 
 const currentUser = useUserStore();
@@ -20,6 +19,48 @@ let data = ref({
   ],
 })
 const process = ref(false);
+
+let filters = {
+  dateRange: {
+    startDate: '',
+    endDate: ''
+  },
+  number: '',
+  serialNumber: '',
+  address: '',
+  act_good: 1,
+  act_bad: 1,
+  act_brak: 0,
+};
+
+prepareFilters()
+
+function exportExcel() {
+  axios.post(`/api/export/excel/meters/${currentUser.user.id}`,
+    {
+      filters: filters,
+    })
+    .then((resp) => {
+      // console.log('file', resp.data);
+      let filename = resp.data.data;
+      if (filename && filename !== undefined)
+        window.open(`https://pin.poverkadoma.ru/get-file?filename=${filename}`, '_blank');
+    });
+
+}
+
+function prepareFilters() {
+  const now = new Date()
+  const year = now.getFullYear()
+  const month = String(now.getMonth() + 1).padStart(2, '0')
+  const year1 = now.getMonth() === 0 ? (year - 1) : now.getFullYear()
+  const month1 = now.getMonth() === 1 ? 12 : String(now.getMonth()+1 ).padStart(2, '0')
+  const day = String(now.getDate()).padStart(2, '0')
+  filters.dateRange['startDate'] = year1 + '-' + month1 + '-01'
+  filters.dateRange['endDate'] = year + '-' + month + '-' + day
+}
+
+
 
 onMounted(() => {
   process.value = false
@@ -50,6 +91,29 @@ onMounted(() => {
 
 <template>
   <div v-if="process">
-    <CChartBar :data="data" />
+    <CRow>
+      <CCol :sm="5">
+        <h4 id="traffic" class="card-title mb-0">Поверки </h4>
+        <div class="small text-body-secondary">общая статистика по работикам за весь период работы</div>
+      </CCol>
+      <CCol :sm="7" class="d-none d-md-block">
+        <CButton color="primary" class="float-end" @click="exportExcel" :title="'Загрузка выгруженных поверок за текущий месяц ( '+
+                filters.dateRange['startDate']+'-'+ filters.dateRange['endDate']+')'">
+          <CIcon icon="cil-cloud-download" />
+        </CButton>
+        <CButtonGroup
+          class="float-end me-3"
+          role="group"
+          aria-label="Basic outlined example"
+        >
+          <!--                  <CButton color="secondary" variant="outline">Day</CButton>-->
+          <!--                  <CButton color="secondary" variant="outline" active>Month</CButton>-->
+          <!--                  <CButton color="secondary" variant="outline">Year</CButton>-->
+        </CButtonGroup>
+      </CCol>
+    </CRow>
+    <CRow>
+      <CChartBar :data="data" />
+    </CRow>
   </div>
 </template>
