@@ -63,9 +63,9 @@ function checkAct() {
                       <CButton color="primary" class="px-4" @click="Authentication"> Вход </CButton>
                     </CCol>
                     <CCol :xs="6" class="text-right">
-                      <!--                      <CButton color="link" class="px-0">-->
-                      <!--                        Забыли пароль?-->
-                      <!--                      </CButton>-->
+            <!--                      <CButton color="link" class="px-0">-->
+            <!--                        Забыли пароль?-->
+            <!--                      </CButton>-->
                     </CCol>
                   </CRow>
                 </CForm>
