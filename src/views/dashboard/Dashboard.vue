@@ -7,7 +7,7 @@ import avatar5 from '@/assets/images/avatars/5.jpg'
 import avatar6 from '@/assets/images/avatars/6.jpg'
 import MainChart from './MainChart.vue'
 import WorkerChart from './WorkerChart.vue'
-import UserParams from './UserParams.vue'
+// import UserParams from './UserParams.vue'
 </script>
 
 <template>
@@ -30,7 +30,7 @@ import UserParams from './UserParams.vue'
     </CRow>
     <CRow>
       <CCol :sm="12">
-        <UserParams/>
+<!--        <UserParams/>-->
       </CCol>
     </CRow>
   </div>
