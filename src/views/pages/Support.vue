@@ -9,7 +9,7 @@ import SupportList from '@/views/Support/SupportList.vue'
 
 const currentUser = useUserStore();
 
-const list= ref([]);
+const messages= ref([]);
 const visible = ref(false)
 
 function loadData() {
@@ -19,8 +19,13 @@ function loadData() {
         // console.log('Set act ', axios.defaults.baseURL, axios.defaults.headers.common.Authorization);
         axios.post(`/api/chat/get`, {})
           .then((resp) => {
-            list.value = resp.data.data;
-          });
+            messages.value = resp.data.data;
+          }).catch(error => {
+          // console.log('Error get record ', error)
+          if (error.response.data.status===400) {
+            currentUser.logout();
+          }
+        })
       }
 }
 
@@ -49,13 +54,13 @@ onMounted(() => {
           <CCollapse :visible="visible">
               <CRow>
                 <CCol>
-                  <SupportForm v-on:refresh-list="loadData"/>
+                  <SupportForm @refreshList="loadData"/>
                 </CCol>
               </CRow>
               </CCollapse>
           <CRow>
                 <CCol>
-                  <SupportList :list="list"/>
+                  <SupportList :list="messages"/>
                 </CCol>
               </CRow>
         </CCol>

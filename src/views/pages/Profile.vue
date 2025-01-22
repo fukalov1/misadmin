@@ -146,7 +146,7 @@ function removeTools(index, id) {
                 </strong>
               </CCol>
               <CCol sm="6">
-                <label>Кредитный лимит поверок</label>
+                <label>Кредитный лимит выгрузок</label>
                 <strong>
                   {{ currentUser.user.partner.limit_credit }}
                   (остаток {{ all_meters }})

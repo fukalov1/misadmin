@@ -6,121 +6,8 @@ import avatar4 from '@/assets/images/avatars/4.jpg'
 import avatar5 from '@/assets/images/avatars/5.jpg'
 import avatar6 from '@/assets/images/avatars/6.jpg'
 import MainChart from './MainChart.vue'
-
-const progressGroupExample1 = [
-  { title: 'Monday', value1: 34, value2: 78 },
-  { title: 'Tuesday', value1: 56, value2: 94 },
-  { title: 'Wednesday', value1: 12, value2: 67 },
-  { title: 'Thursday', value1: 43, value2: 91 },
-  { title: 'Friday', value1: 22, value2: 73 },
-  { title: 'Saturday', value1: 53, value2: 82 },
-  { title: 'Sunday', value1: 9, value2: 69 },
-]
-const progressGroupExample2 = [
-  { title: 'Male', icon: 'cil-user', value: 53 },
-  { title: 'Female', icon: 'cil-user-female', value: 43 },
-]
-const progressGroupExample3 = [
-  {
-    title: 'Organic Search',
-    icon: 'cib-google',
-    percent: 56,
-    value: '191,235',
-  },
-  { title: 'Facebook', icon: 'cib-facebook', percent: 15, value: '51,223' },
-  { title: 'Twitter', icon: 'cib-twitter', percent: 11, value: '37,564' },
-  { title: 'LinkedIn', icon: 'cib-linkedin', percent: 8, value: '27,319' },
-]
-const tableExample = [
-  {
-    avatar: { src: avatar1, status: 'success' },
-    user: {
-      name: 'Иванов Иван Иванович',
-      new: true,
-      registered: 'Стоматолог',
-    },
-    country: { name: 'USA', flag: 'cif-us' },
-    usage: {
-      value: 50,
-      period: 'Jun 11, 2023 - Jul 10, 2023',
-      color: 'success',
-    },
-    payment: { name: 'Mastercard', icon: 'cib-cc-mastercard' },
-    activity: '10 sec ago',
-  },
-  {
-    avatar: { src: avatar2, status: 'danger' },
-    user: {
-      name: 'Петров Петр Петрович',
-      new: false,
-      registered: 'Ортодонт',
-    },
-    country: { name: 'Brazil', flag: 'cif-br' },
-    usage: {
-      value: 22,
-      period: 'Jun 11, 2023 - Jul 10, 2023',
-      color: 'info',
-    },
-    payment: { name: 'Visa', icon: 'cib-cc-visa' },
-    activity: '5 minutes ago',
-  },
-  {
-    avatar: { src: avatar3, status: 'warning' },
-    user: { name: 'Соловьева Елена Ивановна', new: true, registered: 'Стоматолог' },
-    country: { name: 'India', flag: 'cif-in' },
-    usage: {
-      value: 74,
-      period: 'Jun 11, 2023 - Jul 10, 2023',
-      color: 'warning',
-    },
-    payment: { name: 'Stripe', icon: 'cib-cc-stripe' },
-    activity: '1 hour ago',
-  },
-  {
-    avatar: { src: avatar4, status: 'secondary' },
-    user: { name: 'Enéas Kwadwo', new: true, registered: 'Jan 1, 2023' },
-    country: { name: 'France', flag: 'cif-fr' },
-    usage: {
-      value: 98,
-      period: 'Jun 11, 2023 - Jul 10, 2023',
-      color: 'danger',
-    },
-    payment: { name: 'PayPal', icon: 'cib-cc-paypal' },
-    activity: 'Last month',
-  },
-  {
-    avatar: { src: avatar5, status: 'success' },
-    user: {
-      name: 'Agapetus Tadeáš',
-      new: true,
-      registered: 'Jan 1, 2023',
-    },
-    country: { name: 'Spain', flag: 'cif-es' },
-    usage: {
-      value: 22,
-      period: 'Jun 11, 2023 - Jul 10, 2023',
-      color: 'primary',
-    },
-    payment: { name: 'Google Wallet', icon: 'cib-cc-apple-pay' },
-    activity: 'Last week',
-  },
-  {
-    avatar: { src: avatar6, status: 'danger' },
-    user: {
-      name: 'Friderik Dávid',
-      new: true,
-      registered: 'Jan 1, 2023',
-    },
-    country: { name: 'Poland', flag: 'cif-pl' },
-    usage: {
-      value: 43,
-      period: 'Jun 11, 2023 - Jul 10, 2023',
-      color: 'success',
-    },
-    payment: { name: 'Amex', icon: 'cib-cc-amex' },
-    activity: 'Last week',
-  },
-]
+import WorkerChart from './WorkerChart.vue'
+// import UserParams from './UserParams.vue'
 </script>
 
 <template>
@@ -130,30 +17,20 @@ const tableExample = [
         <CCard class="mb-4">
           <CCardBody>
             <CRow>
-              <CCol :sm="5">
-                <h4 id="traffic" class="card-title mb-0">Поверки</h4>
-                <div class="small text-body-secondary">Январь - Октябрь 2024</div>
+              <CCol :sm="8">
+                <MainChart />
               </CCol>
-              <CCol :sm="7" class="d-none d-md-block">
-                <CButton color="primary" class="float-end">
-                  <CIcon icon="cil-cloud-download" />
-                </CButton>
-                <CButtonGroup
-                  class="float-end me-3"
-                  role="group"
-                  aria-label="Basic outlined example"
-                >
-                  <CButton color="secondary" variant="outline">Day</CButton>
-                  <CButton color="secondary" variant="outline" active>Month</CButton>
-                  <CButton color="secondary" variant="outline">Year</CButton>
-                </CButtonGroup>
+              <CCol :sm="4">
+                <WorkerChart />
               </CCol>
-            </CRow>
-            <CRow>
-              <MainChart style="height: 300px; max-height: 600px; margin-top: 40px" />
             </CRow>
           </CCardBody>
         </CCard>
+      </CCol>
+    </CRow>
+    <CRow>
+      <CCol :sm="12">
+<!--        <UserParams/>-->
       </CCol>
     </CRow>
   </div>

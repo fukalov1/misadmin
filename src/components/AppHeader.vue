@@ -29,36 +29,38 @@ onMounted(() => {
       </CHeaderToggler>
       <CHeaderNav class="d-none d-md-flex">
         <CNavItem>
-          <CNavLink href="/dashboard"> Дашбоард </CNavLink>
+          <CNavLink href="/#/dashboard">  МС-Ресурс - информационная система поверок счетчиков воды. </CNavLink>
         </CNavItem>
+<!--        <CNavItem>-->
+<!--          <CNavLink href="/#/profile">Профиль</CNavLink>-->
+<!--        </CNavItem>-->
         <CNavItem>
-          <CNavLink href="#">Пользователи</CNavLink>
-        </CNavItem>
-        <CNavItem>
-          <CNavLink href="#">Настройки</CNavLink>
+  <!--          <CNavLink href="https://pin.poverkadoma.ru" class="text-danger">-->
+  <!--            Старая версия личного кабинета-->
+  <!--          </CNavLink>-->
         </CNavItem>
       </CHeaderNav>
       <CHeaderNav class="ms-auto">
         <CNavItem>
-          <CNavLink href="#">
-            <CIcon icon="cil-bell" size="lg" />
+          <CNavLink href="https://pin.poverkadoma.ru" class="text-danger" title="Старая версия личного кабинета">
+            <CIcon icon="cil-grid" size="lg" />
           </CNavLink>
-        </CNavItem>
-        <CNavItem>
-          <CNavLink href="#">
-            <CIcon icon="cil-list" size="lg" />
-          </CNavLink>
-        </CNavItem>
-        <CNavItem>
-          <CNavLink href="#">
-            <CIcon icon="cil-envelope-open" size="lg" />
-          </CNavLink>
+<!--        </CNavItem>-->
+<!--        <CNavItem>-->
+<!--          <CNavLink href="#">-->
+<!--            <CIcon icon="cil-list" size="lg" />-->
+<!--          </CNavLink>-->
+<!--        </CNavItem>-->
+<!--        <CNavItem>-->
+<!--          <CNavLink href="#">-->
+<!--            <CIcon icon="cil-envelope-open" size="lg" />-->
+<!--          </CNavLink>-->
         </CNavItem>
       </CHeaderNav>
       <CHeaderNav>
-        <li class="nav-item py-1">
-          <div class="vr h-100 mx-2 text-body text-opacity-75"></div>
-        </li>
+<!--        <li class="nav-item py-1">-->
+<!--          <div class="vr h-100 mx-2 text-body text-opacity-75"></div>-->
+<!--        </li>-->
         <CDropdown variant="nav-item" placement="bottom-end">
           <CDropdownToggle :caret="false">
             <CIcon v-if="colorMode === 'dark'" icon="cil-moon" size="lg" />

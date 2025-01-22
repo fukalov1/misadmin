@@ -10,6 +10,12 @@ import ServiceRequestFilter from "../ServiceRequests/ServiceRequestFilter";
 
 const currentUser = useUserStore();
 
+const  props = defineProps({
+  create_user_id: {
+    type: Number
+  },
+})
+
 const edit_mode = ref(false)
 const current_row = ref({})
 const currentPage = ref(1)
@@ -31,7 +37,7 @@ const columns = [
   {
     label: 'Дата создания',
     field: 'created_at1',
-    type: 'string',
+    type: 'date',
     dateInputFormat: 'yyyy-MM-dd',
     dateOutputFormat: 'yyy-MM-dd',
     disabled: true,
@@ -170,6 +176,7 @@ onMounted(() => {
   loadData();
 })
 
+
 function enableFilterMode() {
   // console.log('change filters ', filters)
   loadData()
@@ -227,6 +234,11 @@ function loadData() {
     sort: sort.value
   }
 
+  if (props.create_user_id) {
+    // console.log('props agent ', props.create_user_id)
+    dataParams.created_user_id = props.create_user_id
+  }
+
   // console.log('All params', dataParams)
 
   let dataJSON = getQueryString(dataParams);
@@ -245,7 +257,7 @@ function loadData() {
     }
 
     process.value = true
-    console.log('Process', process)
+    // console.log('Process', process)
   }).catch(error => {
     // console.log('Error get record ', error)
     if (error.response.data.status===400) {
@@ -253,7 +265,7 @@ function loadData() {
     }
     process.value = true
   })
-  console.log('Process', process)
+  // console.log('Process', process)
 
 }
 
@@ -436,20 +448,20 @@ function cancelServiceRequest(item, comment) {
     </CRow>
 
     <ServiceRequestTable
-    :editable="true"
-    :rows="data"
-    :columns="columns"
-    @enableEditMode="changeEditMode"
-    @cancelServiceRequest="cancelServiceRequest"
-    @attachActServiceRequest="attachActServiceRequest"
-    v-if="edit_mode===false">
-  </ServiceRequestTable>
+      :editable="true"
+      :rows="data"
+      :columns="columns"
+      @enableEditMode="changeEditMode"
+      @cancelServiceRequest="cancelServiceRequest"
+      @attachActServiceRequest="attachActServiceRequest"
+      v-if="edit_mode===false">
+    </ServiceRequestTable>
     <ServiceRequestForm
-    v-else
-    @accept-data="acceptData"
-    @approve-data="approveData"
-    @cancel-data="changeEditMode"
-    :columns="columns"
-    :item="current_row"/>
+      v-else
+      @accept-data="acceptData"
+      @approve-data="approveData"
+      @cancel-data="changeEditMode"
+      :columns="columns"
+      :item="current_row"/>
   </div>
 </template>

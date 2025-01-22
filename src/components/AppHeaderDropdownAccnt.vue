@@ -1,5 +1,5 @@
 <script setup>
-import avatar from '@/assets/images/avatars/8.jpg'
+import avatar from '@/assets/images/avatars/noname.jpg'
 import router from '@/router'
 import {useUserStore} from '@/stores/user.js'
 

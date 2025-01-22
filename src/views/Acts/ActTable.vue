@@ -1,11 +1,22 @@
 <script setup>
 
-const { editable, rows } = defineProps(['editable', 'rows', 'columns', 'sort'])
+import {computed} from "vue";
+import { useColorModes } from '@coreui/vue'
+const { colorMode, setColorMode } = useColorModes('coreui-free-vue-admin-template-theme')
+
+const { editable, rows } = defineProps(['editable', 'rows', 'count', 'columns', 'sort'])
 const emit = defineEmits(['enableEditMode', 'deleteItem', 'changePage', 'changePerPage', 'changeSort'])
 
 function  rowStyleClassFn(row) {
-  return row.exported === 1 ? 'bg-green' : '';
+  if (theme.value === 'nocturnal' )
+    return row.exported === 1 ? 'bg-green-dark' : '';
+  else
+    return row.exported === 1 ? 'bg-green' : '';
 }
+
+const theme = computed(() => {
+  return colorMode.value === 'dark' ? 'nocturnal' : ''
+})
 
 function onSortChange(params) {
   emit('changeSort', params)
@@ -19,19 +30,23 @@ function onPerPageChange(params) {
   emit('changePerPage',  params.currentPerPage)
 }
 
+function loadPdf(item) {
+  window.open(`https://pin.poverkadoma.ru/data/act/pdf?id=${item.number_act}&pin=${item.pin}`, '_blank')
+}
+
 </script>
 
 <template>
   <div>
     <vue-good-table
       mode="remote"
-      :totalRows="155"
+      :totalRows="count"
       :columns="columns"
+      :theme="theme"
       :rows="rows"
       v-on:sort-change="onSortChange"
       v-on:page-change="onPageChange"
       v-on:per-page-change="onPerPageChange"
-      theme="dark"
       styleClass="vgt-table condensed striped"
       :row-style-class="rowStyleClassFn"
       :sort-options="{
@@ -40,7 +55,7 @@ function onPerPageChange(params) {
       }"
       :pagination-options="{
         enabled: true,
-        mode: 'records',
+        mode: 'pages',
         perPage: 15,
         position: 'bottom',
         perPageDropdown: [10, 15, 50, 100, 500],
@@ -67,6 +82,11 @@ function onPerPageChange(params) {
                  class="btn-action red"
                  v-if="props.row.exported===0"
           />
+          <CIcon icon="cib-adobe-acrobat-reader" size="xl"
+                          title="Загрузить PDF акта"
+                          v-if="props.row.type!=='испорчен'"
+                          @click="loadPdf(props.row)"
+                          class="btn-action black"/>
         </span>
         <span v-else>
           {{props.formattedRow[props.column.field]}}
@@ -98,6 +118,9 @@ function onPerPageChange(params) {
   }
   .bg-green {
     background-color: rgba(202, 250, 187, 0.94) !important;
+  }
+  .bg-green-dark {
+    background-color: rgba(82, 121, 70, 0.94) !important;
   }
 
 </style>

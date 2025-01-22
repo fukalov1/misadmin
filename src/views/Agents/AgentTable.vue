@@ -4,30 +4,11 @@ import {computed} from "vue";
 import { useColorModes } from '@coreui/vue'
 const { colorMode, setColorMode } = useColorModes('coreui-free-vue-admin-template-theme')
 
-const { editable, rows } = defineProps(['editable', 'rows', 'count', 'columns', 'sort'])
-const emit = defineEmits(['enableEditMode', 'deleteItem', 'changePage', 'changePerPage', 'changeSort'])
+const { editable, rows } = defineProps(['editable', 'rows', 'columns'])
+const emit = defineEmits(['enableEditMode', 'cancelAgent', 'showServiceRequest'])
 
 function  rowStyleClassFn(row) {
-  if (theme.value === 'nocturnal' )
-    return row.exported === 1 ? 'bg-green-dark' : '';
-  else
-    return row.exported === 1 ? 'bg-green' : '';
-}
-
-function onSortChange(params) {
-  emit('changeSort', params)
-}
-
-function onPageChange(params) {
-  emit('changePage', params.currentPage)
-}
-
-function onPerPageChange(params) {
-  emit('changePerPage',  params.currentPerPage)
-}
-
-function loadPdf(item) {
-  window.open(`https://pin.poverkadoma.ru/data/act/pdf?id=${item.act.number_act}&pin=${item.act.pin}`, '_blank')
+  // return row.enabled === 1 ? 'bg-green' : '';
 }
 
 const theme = computed(() => {
@@ -39,15 +20,9 @@ const theme = computed(() => {
 <template>
   <div>
     <vue-good-table
-      mode="remote"
-      :totalRows="count"
       :columns="columns"
-      :theme="theme"
       :rows="rows"
-      v-on:sort-change="onSortChange"
-      v-on:page-change="onPageChange"
-      v-on:per-page-change="onPerPageChange"
-      theme="dark"
+      :theme="theme"
       styleClass="vgt-table condensed striped"
       :row-style-class="rowStyleClassFn"
       :sort-options="{
@@ -56,7 +31,7 @@ const theme = computed(() => {
       }"
       :pagination-options="{
         enabled: true,
-        mode: 'pages',
+        mode: 'records',
         perPage: 15,
         position: 'bottom',
         perPageDropdown: [10, 15, 50, 100, 500],
@@ -69,20 +44,17 @@ const theme = computed(() => {
         pageLabel: 'стр', // for 'pages' mode
         allLabel: 'All'}"
     >
-      <template #emptystate>
-        Нет данных
-      </template>
       <template #table-row="props">
         <span v-if="props.column.field == 'id' && editable">
           <CIcon icon="cil-pencil"
                  size="xl"
                  class="btn-action blue"
-                 @click="$emit('enableEditMode', true, props.row)"/>
-         <CIcon icon="cib-adobe-acrobat-reader" size="xl"
-                title="Загрузить PDF акта"
-                v-if="props.row.type!=='испорчен'"
-                @click="loadPdf(props.row)"
-                class="btn-action black"/>
+                 title="изменение агента"
+                 @click="$emit('enableEditMode', true, props.formattedRow)"/>
+          <CIcon icon="cil-info" size="xl"
+                 title="заявки агента"
+                 @click="$emit('showServiceRequest', props.row)"
+                 class="btn-action green"/>
         </span>
         <span v-else>
           {{props.formattedRow[props.column.field]}}
@@ -112,11 +84,22 @@ const theme = computed(() => {
     color: #fff;
     background-color: #0033cc;
   }
+  .black {
+    color: #000;
+  }
+  .black:hover {
+    color: #fff;
+    background-color: #000;
+  }
+  .green {
+    color: #88aa00;
+  }
+  .green:hover {
+    color: #fff;
+    background-color: #88aa00;
+  }
   .bg-green {
     background-color: rgba(202, 250, 187, 0.94) !important;
-  }
-  .bg-green-dark {
-    background-color: rgba(82, 121, 70, 0.94) !important;
   }
 
 </style>

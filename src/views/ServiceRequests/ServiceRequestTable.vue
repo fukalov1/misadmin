@@ -1,7 +1,16 @@
 <script setup>
 
+import {computed} from "vue";
+
+import { useColorModes } from '@coreui/vue'
+const { colorMode, setColorMode } = useColorModes('coreui-free-vue-admin-template-theme')
+
 const { editable, rows } = defineProps(['editable', 'rows', 'columns'])
 const emit = defineEmits(['enableEditMode', 'cancelServiceRequest', 'attachActServiceRequest'])
+
+// watch( colorMode.value, () => {
+//   console.log('current theme ', currentTheme.theme, colorMode)
+// })
 
 // const props = defineProps({
 //   columns: {
@@ -10,9 +19,17 @@ const emit = defineEmits(['enableEditMode', 'cancelServiceRequest', 'attachActSe
 //   }
 // })
 
+const theme = computed(() => {
+  return colorMode.value === 'dark' ? 'nocturnal' : ''
+})
+
 function  rowStyleClassFn(row) {
-  return row.speciality === 1 ? 'bg-green' : '';
+  if (theme.value === 'nocturnal' )
+    return row.speciality === 1 ? 'bg-green-dark' : '';
+  else
+    return row.speciality === 1 ? 'bg-green' : '';
 }
+
 
 function loadPdf(item) {
   window.open(`/data/act/pdf?id=${item.number_act}&pin=${item.pin}`, '_blank')
@@ -41,7 +58,7 @@ function cancelServiceRequest(item) {
     <vue-good-table
       :columns="columns"
       :rows="rows"
-      theme="dark"
+      :theme="theme"
       styleClass="vgt-table condensed striped"
       :row-style-class="rowStyleClassFn"
       :sort-options="{
@@ -134,5 +151,9 @@ function cancelServiceRequest(item) {
   .bg-green {
     background-color: rgba(202, 250, 187, 0.94) !important;
   }
+  .bg-green-dark {
+    background-color: rgba(82, 121, 70, 0.94) !important;
+  }
+
 
 </style>

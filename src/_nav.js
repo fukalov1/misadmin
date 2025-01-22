@@ -50,4 +50,10 @@ export default [
     to: '/support',
     icon: 'cil-people',
   },
+  {
+    component: 'CNavItem',
+    name: 'Агенты',
+    to: '/agents',
+    icon: 'cil-people',
+  },
 ]

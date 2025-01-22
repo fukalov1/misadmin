@@ -5,12 +5,13 @@ import {routes} from '../../api/routes'
 import { getCookie } from '@/helpers/cookie'
 import {useUserStore} from '@/stores/user.js'
 import MeterTable from '../Meters/MeterTable.vue'
-import MeterForm from '../Meters/MeterForm.vue'
+import MeterModal from '../Meters/MeterModal.vue'
 import MeterFilter from "../Meters/MeterFilter.vue"
 
 const currentUser = useUserStore();
 
 const data = ref([])
+const count = ref(0)
 const process = ref(false);
 const edit_mode = ref(false)
 const current_row = ref({})
@@ -30,7 +31,7 @@ const columns = [
   {
     label: 'Дата создания',
     field: 'created_at1',
-    type: 'date',
+    type: 'string',
     dateInputFormat: 'yyyy-MM-dd',
     dateOutputFormat: 'yyy-MM-dd',
     disabled: true
@@ -126,21 +127,21 @@ const filters = ref([
   },
   {
     label: 'Пригоден',
-    name: 'Meter_good',
+    name: 'act_good',
     type: 'bool',
     value: true,
     default: true
   },
   {
     label: 'Непригоден',
-    name: 'Meter_bad',
+    name: 'act_bad',
     type: 'bool',
     value: true,
     default: true
   },
   {
     label: 'Испорчен',
-    name: 'Meter_brak',
+    name: 'act_brak',
     type: 'bool',
     value: false,
     default: false
@@ -155,7 +156,6 @@ onMounted(() => {
   }
   if (worker.value===null)
     worker.value = currentUser.user.id
-  loadData()
 })
 
 watch(worker, () => {
@@ -164,9 +164,51 @@ watch(worker, () => {
 })
 
 function loadData() {
-  console.log('load data')
+  // console.log('load data')
   process.value = false
 
+  let filters_ = prepareFilters()
+  // console.log('Apply filters', filters_)
+
+  let dataParams = {
+    currentPage: currentPage.value,
+    perPage: currentPerPage.value,
+    filters: filters_,
+    sort: sort.value
+  }
+
+  // console.log('All params', dataParams)
+
+  let dataJSON = getQueryString(dataParams);
+  // console.log(`${routes.Meters}/${currentUser.user.id}?${dataJSON}`);
+
+  data.value = [];
+  if (worker.value) {
+    axios.get(`${routes.meters}/${worker.value}?${dataJSON}`).then((response) => {
+      if (response.data.success === true) {
+        data.value = response.data.data
+        count.value = response.data.count
+        // console.log('data', data)
+      }
+
+      process.value = true
+      // console.log('Process', process)
+    }).catch(error => {
+      // console.log('Error get record ', error)
+      if (error.response.data.status === 400) {
+        currentUser.logout();
+      }
+      process.value = true
+    })
+  }
+  // console.log('Process', process)
+}
+
+function exportedFn(row) {
+  return row.exported===0 ? '' : 'да';
+}
+
+function prepareFilters() {
   let filters_ = {
     dateRange: {
       startDate: '',
@@ -200,56 +242,22 @@ function loadData() {
       filters_['number'] = item.value ?? ''
     }
     if (typeof filters_[item.name] !== "undefined" && item.name==='serialNumber') {
-      filters_['number'] = item.value ?? ''
+      filters_['serialNumber'] = item.value ?? ''
     }
     if (typeof filters_[item.name] !== "undefined" && item.name==='address') {
       filters_['address'] = item.value ?? ''
     }
-    if (typeof filters_[item.name] !== "undefined" && item.name==='Meter_good') {
-      filters_['Meter_good'] = + item.value ?? 0
+    if (typeof filters_[item.name] !== "undefined" && item.name==='act_good') {
+      filters_['act_good'] = item.value ? 1 : 0
     }
-    if (typeof filters_[item.name] !== "undefined" && item.name==='Meter_bad') {
-      filters_['Meter_bad'] = + item.value ?? 0
+    if (typeof filters_[item.name] !== "undefined" && item.name==='act_bad') {
+      filters_['act_bad'] = item.value ? 1 : 0
     }
-    if (typeof filters_[item.name] !== "undefined" && item.name==='Meter_brak') {
-      filters_['Meter_brak'] = + item.value ?? 0
+    if (typeof filters_[item.name] !== "undefined" && item.name==='act_brak') {
+      filters_['act_brak'] = item.value ? 1 : 0
     }
-  });
-  // console.log('Apply filters', filters_)
-
-  let dataParams = {
-    currentPage: currentPage.value,
-    perPage: currentPerPage.value,
-    filters: filters_,
-    sort: sort.value
-  }
-
-  // console.log('All params', dataParams)
-
-  let dataJSON = getQueryString(dataParams);
-  // console.log(`${routes.Meters}/${currentUser.user.id}?${dataJSON}`);
-
-  data.value = [];
-  axios.get(`${routes.meters}/${worker.value}?${dataJSON}`).then((response) => {
-    if (response.data.success === true) {
-      data.value = response.data.data;
-      // console.log('data', data)
-    }
-
-    process.value = true
-    // console.log('Process', process)
-  }).catch(error => {
-    // console.log('Error get record ', error)
-    if (error.response.data.status===400) {
-      currentUser.logout();
-    }
-    process.value = true
   })
-  // console.log('Process', process)
-}
-
-function exportedFn(row) {
-  return row.exported===0 ? '' : 'да';
+  return filters_
 }
 
 function getQueryString(obj, path = '') {
@@ -291,6 +299,20 @@ function removeMeter(item) {
       });
 };
 
+function exportExcel() {
+  let filters_ = prepareFilters()
+  axios.post(`/api/export/excel/meters/${worker.value}`,
+    {
+      filters: filters_,
+    })
+    .then((resp) => {
+      // console.log('file', resp.data);
+      let filename = resp.data.data;
+      if (filename && filename !== undefined)
+        window.open(`https://pin.poverkadoma.ru/get-file?filename=${filename}`, '_blank');
+    });
+
+}
 
 function enableFilterMode() {
   // console.log('change filters ', filters)
@@ -341,7 +363,16 @@ function changePerPage(perPage) {
         </CCol>
       </CRow>
     <br/>
-    <CButton color="primary" @click="visible = !visible" class="mb-3 right">Фильтр</CButton>
+    <CRow>
+      <CCol sm="2">
+        <CButton color="primary" @click="visible = !visible" class="mb-3 right">Фильтр</CButton>
+      </CCol>
+      <CCol sm="8">
+      </CCol>
+      <CCol sm="2">
+        <CButton color="info" @click="exportExcel()" class="mb-3 right">Экспорт в Excel</CButton>
+      </CCol>
+    </CRow>
     <CRow>
       <CCol sm="12">
     <CCollapse :visible="visible">
@@ -355,19 +386,19 @@ function changePerPage(perPage) {
     <MeterTable
     :editable="true"
     :rows="data"
+    :count="count"
     :columns="columns"
     @changeSort="changeSort"
     @changePage="changePage"
     @changePerPage="changePerPage"
     @enableEditMode="changeEditMode"
     @DeleteItem="deleteItem"
-    v-if="edit_mode===false">
+    v-show="!edit_mode">
   </MeterTable>
-    <MeterForm
-    v-else
+  <MeterModal
+    v-if="edit_mode"
     @enableEditMode="changeEditMode"
-    @DeleteItem="deleteItem"
-    :columns="columns"
+    @hide-document="edit_mode.value=false"
     :item="current_row"/>
   </div>
 </template>

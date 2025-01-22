@@ -8,6 +8,7 @@ import { USER_REQUEST } from '@/api/user'
 import DefaultLayout from '@/layouts/DefaultLayout'
 
 import isUser from "./middleware/isUser";
+import isDispatcher from "./middleware/isDispatcher";
 
 const routes = [
   {
@@ -33,9 +34,19 @@ const routes = [
         name: 'Заявки диспетчера поверочной лаборатории',
         meta: { title: 'Заявки диспетчера поверочной лаборатории', auth: true,
           middleware: [
-            isUser
+            isDispatcher
           ]},
         component: () => import('@/views/pages/ServiceRequests.vue'),
+      },
+      {
+        path: '/agent-service-requests/:create_user_id',
+        name: 'Заявки агента',
+        meta: { title: 'Заявки агента', auth: true,
+          middleware: [
+            isUser
+          ]},
+        component: () => import('@/views/pages/ServiceRequestsAgent.vue'),
+        props: true
       },
       {
         path: '/acts',
@@ -100,6 +111,15 @@ const routes = [
           ]},
         component: () => import('@/views/pages/Support.vue'),
       },
+      {
+        path: '/agents',
+        name: 'Агенты',
+        meta: { title: 'Агенты', auth: true,
+          middleware: [
+            isUser
+          ]},
+        component: () => import('@/views/pages/Agents.vue'),
+      },
     ],
   },
   {
@@ -130,6 +150,31 @@ const routes = [
         meta: { title: 'Авторизация', auth: false },
         component: () => import('@/views/pages/Login'),
       },
+      {
+        path: 'auto-login/:token',
+        name: 'auto-login',
+        meta: { title: 'Авторизация', auth: false },
+        component: () => import('@/views/pages/AutoLoginPage'),
+        props: true
+      },
+      {
+        path: 'info',
+        name: 'Условия пользования платными услугами',
+        meta: { title: 'Условия пользования платными услугами', auth: false},
+        component: () => import('@/views/pages/Info.vue'),
+      },
+      {
+        path: 'offer',
+        name: 'Оферта',
+        meta: { title: 'Оферта', auth: false},
+        component: () => import('@/views/pages/Offer.vue'),
+      },
+      {
+        path: 'privacy',
+        name: 'Политика конфиденциальности',
+        meta: { title: 'Политика конфиденциальности', auth: false},
+        component: () => import('@/views/pages/Privacy.vue'),
+      },
     ],
   },
 ]
@@ -155,7 +200,8 @@ router.beforeEach((to, from, next) => {
       USER_REQUEST()
   }
 
-  if (currentUser.isLoggedIn===false && to.path !== '/pages/login') {
+  if (currentUser.isLoggedIn===false && to.path !== '/pages/login' && to.name !== 'auto-login' && to.path !== '/pages/privacy'
+    && to.path !== '/pages/info' && to.path !== '/pages/offer' && to.path !== '/pages/404') {
     // console.log('test', !currentAuth.isLoggin, from.path, to.meta.auth)
     next({ path: "/pages/login" })
   }

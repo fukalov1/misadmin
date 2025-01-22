@@ -1,5 +1,9 @@
 <script setup>
 
+import {computed} from "vue";
+import { useColorModes } from '@coreui/vue'
+const { colorMode, setColorMode } = useColorModes('coreui-free-vue-admin-template-theme')
+
 const { editable, rows, columns } = defineProps(['editable', 'rows', 'columns', 'countRows'])
 const emit = defineEmits(['enableEditMode', 'show-modal', 'changePage', 'changePerPage', 'changeSort'])
 
@@ -25,6 +29,10 @@ function onPerPageChange(params) {
   emit('changePerPage',  params.currentPerPage)
 }
 
+const theme = computed(() => {
+  return colorMode.value === 'dark' ? 'nocturnal' : ''
+})
+
 </script>
 
 <template>
@@ -34,6 +42,7 @@ function onPerPageChange(params) {
       :totalRows="countRows"
       :columns="columns"
       :rows="rows"
+      :theme="theme"
       v-on:sort-change="onSortChange"
       v-on:page-change="onPageChange"
       v-on:per-page-change="onPerPageChange"

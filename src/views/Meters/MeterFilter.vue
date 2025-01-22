@@ -58,6 +58,8 @@ function resetData() {
                 v-model="filter.value"
                 locale="ru"
                 :format="format"
+                select-text="Выбрать"
+                cancel-text="Закрыть"
                 v-else-if="filter.type==='daterange'"
                 range />
               <VueDatePicker
