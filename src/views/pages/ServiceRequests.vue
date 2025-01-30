@@ -402,14 +402,15 @@ function attachActServiceRequest(item, number_act)  {
 function cancelServiceRequest(item, comment) {
   if (confirm('Вы точно хотите отменить заявку: '+item.name+'?')) {
     edit_mode.value = false
-
+    item.status = 8;
+    item.comment = comment;
     const token = getCookie('api_token')
     if (token) {
       axios.defaults.headers.common.Authorization = `Bearer ${token}`
       axios.post(`/api/v1/service-request/set-status`, item)
         .then((resp) => {
           alert('Отмена заявки '+resp.data.data);
-          // console.log('response', resp.data);
+          console.log('response', resp.data);
           if (resp.data.success) loadData()
         })
         .catch((resp) => {

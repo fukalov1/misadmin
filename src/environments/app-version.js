@@ -1,1 +1,1 @@
-export const APP_VERSION = '3.1.38'; // DO NOT TOUCH
+export const APP_VERSION = '3.1.42'; // DO NOT TOUCH

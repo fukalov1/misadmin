@@ -2,6 +2,7 @@
 
 import { ref, onMounted, watch, computed } from 'vue'
 import axios from 'axios'
+import router from '@/router'
 import { getCookie } from '@/helpers/cookie'
 import {useUserStore} from '@/stores/user.js'
 
@@ -204,6 +205,10 @@ function paymentTransaction() {
         process.value = true
     }
 
+function showOfferPage() {
+  document.location = '#/pages/offer'
+}
+
 onMounted(() => {
   loadData()
   getMeterPrices()
@@ -334,7 +339,7 @@ onMounted(() => {
                       </div>
                       <p>
                         Перед совершением покупки просим Вас ознакомиться с условиями договора оферты. Нажимая кнопку "Оплатить",
-                        Вы подтверждаете свое согласие с <a href="http://localhost:3000/#/pages/offer" target="_blank">условиями оферты</a>.
+                        Вы подтверждаете свое согласие с <span @click="showOfferPage" class="link-info">условиями оферты</span>.
                       </p>
                       <div v-if="payment_type < 2">
                         <CButton color="info" class="mb-2" @click="sendPayment">
@@ -435,4 +440,9 @@ onMounted(() => {
     }
   }
 }
+
+.link-info {
+  cursor: pointer;
+}
+
 </style>
