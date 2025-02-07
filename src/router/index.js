@@ -8,6 +8,7 @@ import { USER_REQUEST } from '@/api/user'
 import DefaultLayout from '@/layouts/DefaultLayout'
 
 import isUser from "./middleware/isUser";
+import isAgent from "./middleware/isAgent";
 import isDispatcher from "./middleware/isDispatcher";
 
 const routes = [
@@ -43,7 +44,7 @@ const routes = [
         name: 'Заявки агента',
         meta: { title: 'Заявки агента', auth: true,
           middleware: [
-            isUser
+            isAgent
           ]},
         component: () => import('@/views/pages/ServiceRequestsAgent.vue'),
         props: true
@@ -53,7 +54,7 @@ const routes = [
         name: 'Акты',
         meta: { title: 'Акты', auth: true,
           middleware: [
-            isUser
+            isUser, isAgent
           ]},
         component: () => import('@/views/pages/Acts.vue'),
       },
@@ -62,7 +63,7 @@ const routes = [
         name: 'Поверки',
         meta: { title: 'Поверки', auth: true,
           middleware: [
-            isUser
+            isUser, isAgent
           ]},
         component: () => import('@/views/pages/Meters.vue'),
       },
@@ -98,7 +99,7 @@ const routes = [
         name: 'Профиль',
         meta: { title: 'Профиль пользователя', auth: true,
           middleware: [
-            isUser
+            isUser, isAgent
           ]},
         component: () => import('@/views/pages/Profile.vue'),
       },
@@ -107,7 +108,7 @@ const routes = [
         name: 'Тех.поддержка',
         meta: { title: 'Техническая поддержка', auth: true,
           middleware: [
-            isUser
+            isUser, isAgent
           ]},
         component: () => import('@/views/pages/Support.vue'),
       },
@@ -218,12 +219,19 @@ router.beforeEach((to, from, next) => {
     next,
   }
   if (middleware)
-    if (middleware.length)
-      return middleware[0]({
-        ...context,
-        next: middlewarePipeline(context, middleware, 1),
-        currentUser
+    if (middleware.length) {
+      let result = null
+      let i = 1
+      middleware.forEach((item) => {
+        result =  item({
+          ...context,
+          next: middlewarePipeline(context, middleware, i, currentUser),
+          currentUser
+        })
+        i++;
       })
+      return result
+    }
     else
       return next()
 })

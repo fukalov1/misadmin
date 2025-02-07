@@ -18,7 +18,29 @@ const currentPerPage = ref(15)
 const sort = ref({})
 
 const data = ref([])
+const cities = ref([{id: 0, value: 'не указан'}])
 const process = ref(false);
+
+const new_service_request = ref({
+  name: null,
+  address: null,
+  phone: null,
+  city_id: 278,
+  city_name: 'Тольятти',
+  cities: [],
+  comment: null,
+  partner_id: null,
+  user_id: null,
+  date: null,
+  time: null,
+  id: 0,
+  miowner: null,
+  price: 500,
+  request_status_id: 2,
+  status: 'Новая',
+  system_source_id: 1
+})
+
 
 const columns = [
   {
@@ -72,10 +94,11 @@ const columns = [
   },
   {
     label: 'Город',
-    field: 'city_name',
-    type: 'string',
+    field: 'city_id',
+    type: 'lists',
     showForm: true,
-    disabled: true,
+    hidden: true,
+    options: []
   },
   {
     label: 'Адрес',
@@ -168,6 +191,8 @@ const filters = ref([
 
 onMounted(() => {
   loadData();
+  console.log('START GET LIST CITIES')
+  getListCities()
 })
 
 function enableFilterMode() {
@@ -245,7 +270,7 @@ function loadData() {
     }
 
     process.value = true
-    console.log('Process', process)
+    // console.log('Process', process)
   }).catch(error => {
     // console.log('Error get record ', error)
     if (error.response.data.status===400) {
@@ -292,6 +317,37 @@ function listUsers() {
   let result = currentUser.user.slave_users.map(item => { return {id: parseInt(item.slave.id), value: item.slave.name}})
   result.push({id: 0, value: 'не указан'})
   return result
+}
+
+function listCities() {
+  return cities.value
+}
+
+function getListCities() {
+  const token = getCookie('api_token')
+
+  if (token) {
+    axios.defaults.headers.common.Authorization = `Bearer ${token}`
+    axios.get(`${routes.cities}`)
+      .then((resp) => {
+        if (resp.data.success) {
+          cities.value = resp.data.data.map(item => { return {id: parseInt(item.id), value: item.name}})
+          columns.map((item) => {
+            console.log('fill cities ',item.field, cities.value)
+            if (item.field === 'city_id')
+              item.options = cities.value
+          })
+          // console.log('cities', new_service_request.value)
+
+          // console.log('Result list cities ', data.cities);
+        } else {
+          // console.log('Empty list cities ');
+        }
+      })
+      .catch((resp) => {
+        console.log('Error get list cities ', resp);
+      });
+  }
 }
 
 function dateFn(row) {
@@ -353,7 +409,7 @@ function saveItem(type) {
     city_id: current_row.value.city_id,
     address: current_row.value.address,
   }
-  console.log('Send data', data);
+  // console.log('Send data', data);
   let url = `/api/v1/service-request/accept`;
   if (type == 'accept') {
     url = `/api/v1/service-request/set-status`;
@@ -425,7 +481,16 @@ function cancelServiceRequest(item, comment) {
 
 <template>
   <div>
-    <CButton color="primary" @click="visible = !visible" class="mb-3 right">Фильтр</CButton>
+    <CRow>
+      <CCol sm2="10">
+        <CButton color="primary" @click="visible = !visible" class="mb-3 right">Фильтр</CButton>
+      </CCol>
+      <CCol sm2="2">
+        <CButton class="btn btn-dark" @click="changeEditMode(true, new_service_request)">
+          Создать заявку
+        </CButton>
+      </CCol>
+    </CRow>
     <CRow>
       <CCol sm="12">
         <CCollapse :visible="visible">

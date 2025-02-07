@@ -98,13 +98,6 @@ const format = (date) => {
                       {{ item1.value }}
                     </option>
                   </CFormSelect>
-                  <CFormSelect :aria-label="column.label"
-                               v-else-if="column.type==='city_lists'"
-                               v-model="data[column.city_id]">
-                    <option v-for="(item1, indx) in data.cities" :value="item1.id" :key="indx">
-                      {{ item1.name }}
-                    </option>
-                  </CFormSelect>
                   <CFormSelect :aria-label="column.label" v-else-if="column.type==='options'" v-model="data[column.field]">
                     <option v-for="(item1, indx) in column.options" :value="item1.id" :key="indx">
                       {{ item1.value }}

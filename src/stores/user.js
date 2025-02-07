@@ -27,6 +27,8 @@ export const useUserStore = defineStore('user', {
       this.role = null
       this.roles = null
       deleteCookie('api_token')
+      delete localStorage.user_roles
+      delete localStorage.user_id
       document.location = '/'
     },
     setRole(_role) {

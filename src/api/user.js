@@ -10,7 +10,9 @@ export function USER_REQUEST (data) {
   const currentUser = useUserStore()
   axios.post('/api/user', data).then((response) => {
     if (response.data.success === true) {
-      console.log('Set user', response.data)
+      localStorage.setItem('user_id', response.data.user.id+'');
+      localStorage.setItem('user_roles', JSON.stringify(response.data.user.roles));
+      // console.log('Set user', response.data)
       currentUser.setUser(response.data.user)
       }
   }).catch(error => {

@@ -1,17 +1,11 @@
 <script setup>
 import { RouterLink } from 'vue-router'
-
+// import { computed } from 'vue'
 import { logo } from '@/assets/brand/logo'
 import { sygnet } from '@/assets/brand/sygnet'
 import { AppSidebarNav } from '@/components/AppSidebarNav.js'
 import { useSidebarStore } from '@/stores/sidebar.js'
-import { useUserStore } from '@/stores/user.js'
-
 const sidebar = useSidebarStore()
-
-const currentUser = useUserStore();
-console.log('get current user', currentUser.isLoggedIn)
-
 
 </script>
 
@@ -33,7 +27,7 @@ console.log('get current user', currentUser.isLoggedIn)
       </RouterLink>
       <CCloseButton class="d-lg-none" dark @click="sidebar.toggleVisible()" />
     </CSidebarHeader>
-    <AppSidebarNav />
+    <AppSidebarNav/>
     <CSidebarFooter class="border-top d-none d-lg-flex">
       <CSidebarToggler @click="sidebar.toggleUnfoldable()" />
     </CSidebarFooter>

@@ -56,7 +56,7 @@ const columns = [
     sortable: false,
   },
   {
-    label: 'Кол-во поверок',
+    label: 'Кол-во выгрузок',
     field: 'count_meters',
     type: 'string',
     disabled: true,

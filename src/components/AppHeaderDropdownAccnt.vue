@@ -27,7 +27,7 @@ function logout() {
 <!--      <CDropdownItem> <CIcon icon="cil-settings" /> Настройки </CDropdownItem>-->
       <CDropdownDivider />
 <!--      <CDropdownItem> <CIcon icon="cil-shield-alt" /> Lock Account </CDropdownItem>-->
-      <CDropdownItem @click="logout"> <CIcon icon="cil-lock-locked" /> Logout </CDropdownItem>
+      <CDropdownItem @click="logout"> <CIcon icon="cil-lock-locked" /> Выход </CDropdownItem>
     </CDropdownMenu>
   </CDropdown>
 </template>

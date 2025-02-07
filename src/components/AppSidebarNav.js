@@ -1,12 +1,31 @@
-import { defineComponent, h, onMounted, ref, resolveComponent } from 'vue'
+import {computed, defineComponent, h, onMounted, onUpdated, ref, resolveComponent} from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 
 import { CBadge, CSidebarNav, CNavItem, CNavGroup, CNavTitle } from '@coreui/vue'
 
+// import { useUserStore } from '@/stores/user.js'
+
+let roles = null;
+
 import nav from '@/_nav.js'
+const nav_filtered = ref(nav)
 
 import simplebar from 'simplebar-vue'
 import 'simplebar-vue/dist/simplebar.min.css'
+
+roles = JSON.parse(localStorage.getItem('user_roles'))
+console.log('Roles is app side bar nav! ', roles)
+fillNavFiltered()
+console.log('Nav filtered ', nav_filtered.value)
+
+function fillNavFiltered() {
+  nav_filtered.value = nav.filter((item) => {
+    if (item.to === '/agent-service-requests')
+      item.to = item.to + '/'+localStorage.getItem('user_id')
+    if (roles && checkRoles(roles, item.roles))
+      return item
+  })
+}
 
 const normalizePath = (path) =>
   decodeURI(path)
@@ -40,6 +59,21 @@ const isActiveItem = (route, item) => {
   return false
 }
 
+
+// console.log('nav filtered ', nav_filtered)
+
+function checkRoles(arr1, arr2) {
+  // console.log('arr1 ', arr1,'arr2 ', arr2)
+  const leastArr = arr1.length < arr2.length ? arr1 : arr2;
+  const biggestArr = arr1.length >= arr2.length ? arr1 : arr2;
+
+  const resultArray = leastArr.filter((item) => {
+    return biggestArr.some((item2) => item2.id === item.id)
+  });
+
+  return resultArray.length ? true : false
+}
+
 const AppSidebarNav = defineComponent({
   name: 'AppSidebarNav',
   components: {
@@ -53,7 +87,22 @@ const AppSidebarNav = defineComponent({
 
     onMounted(() => {
       firstRender.value = false
+      roles = JSON.parse(localStorage.getItem('user_roles'))
+      // console.log('Roles is app side bar nav mounted ', roles)
     })
+
+    setTimeout(fillRoles, 500);
+
+    function fillRoles() {
+      roles = JSON.parse(localStorage.getItem('user_roles'))
+      // console.log('Roles is app side bar nav updated ', roles)
+      nav_filtered.value = nav.filter((item) => {
+        if (item.to === '/agent-service-requests')
+          item.to = item.to + '/'+localStorage.getItem('user_id')
+        if (roles && checkRoles(roles, item.roles))
+          return item
+      })
+    }
 
     const renderItem = (item) => {
       if (item.items) {
@@ -139,7 +188,7 @@ const AppSidebarNav = defineComponent({
           as: simplebar,
         },
         {
-          default: () => nav.map((item) => renderItem(item)),
+          default: () => nav_filtered.value.map((item) => renderItem(item)),
         },
       )
   },

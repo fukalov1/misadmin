@@ -4,5 +4,6 @@ export const routes = {
   acts: '/api/v2/acts',
   meters: '/api/v2/meters',
   statistic: '/api/v2/statistic',
+  cities: '/api/v2/cities',
 }
 

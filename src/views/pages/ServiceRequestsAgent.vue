@@ -24,7 +24,28 @@ const currentPerPage = ref(15)
 const sort = ref({})
 
 const data = ref([])
+const cities = ref([])
 const process = ref(false);
+
+const new_service_request = ref({
+  name: null,
+  address: null,
+  phone: null,
+  city_id: 278,
+  city_name: 'Тольятти',
+  cities: [{id: 0, value: 'выберите город'}],
+  comment: null,
+  partner_id: null,
+  user_id: null,
+  date: null,
+  time: null,
+  id: 0,
+  miowner: null,
+  price: 500,
+  request_status_id: 2,
+  status: 'Новая',
+  system_source_id: 1
+})
 
 const columns = [
   {
@@ -53,6 +74,7 @@ const columns = [
     label: 'Дата визита',
     field: 'date',
     type: 'datetime',
+    disabled: true,
     hidden: true,
     showForm: true,
   },
@@ -61,7 +83,8 @@ const columns = [
     field: 'time',
     type: 'options',
     hidden: true,
-    showForm: true,
+    disabled: true,
+    showForm: false,
     options: listTime()
   },
   {
@@ -78,10 +101,11 @@ const columns = [
   },
   {
     label: 'Город',
-    field: 'city_name',
-    type: 'string',
+    field: 'city_id',
+    type: 'city_lists',
     showForm: true,
-    disabled: true,
+    hidden: true,
+    options: listCities()
   },
   {
     label: 'Адрес',
@@ -234,12 +258,16 @@ function loadData() {
     sort: sort.value
   }
 
-  if (props.create_user_id) {
-    // console.log('props agent ', props.create_user_id)
+  if (props.create_user_id === null || props.create_user_id == 'null' ) {
+    console.log('props agent ', props.create_user_id)
+    dataParams.created_user_id = currentUser.user.id
+  }
+  else {
+    console.log('props user ', currentUser.user.id)
     dataParams.created_user_id = props.create_user_id
   }
 
-  // console.log('All params', dataParams)
+  console.log('All params', dataParams)
 
   let dataJSON = getQueryString(dataParams);
 
@@ -301,8 +329,34 @@ function listTime() {
 }
 
 function listUsers() {
-  let result = currentUser.user.slave_users.map(item => { return {id: parseInt(item.slave.id), value: item.slave.name}})
+  let result = [];
   result.push({id: 0, value: 'не указан'})
+  currentUser.user.slave_users.forEach(item => { result.push({id: parseInt(item.slave.id), value: item.slave.name}) })
+  return result
+}
+
+function listCities() {
+  const token = getCookie('api_token')
+  let result = [];
+  result.push({id: 0, value: 'не указан'})
+  if (token) {
+    axios.defaults.headers.common.Authorization = `Bearer ${token}`
+    axios.get(`${routes.cities}`)
+      .then((resp) => {
+        if (resp.data.success) {
+          new_service_request.value.cities = resp.data.data;
+          // console.log('cities', new_service_request.value)
+          result = new_service_request.value.cities.map(item => { return {id: parseInt(item.id), value: item.name}})
+
+          // console.log('Result list cities ', data.cities);
+        } else {
+          // console.log('Empty list cities ');
+        }
+      })
+      .catch((resp) => {
+        // console.log('Error get list cities ', resp);
+      });
+  }
   return result
 }
 
@@ -324,6 +378,7 @@ function userFn(row) {
 
 function changeEditMode(show, row) {
   if (show) {
+    listCities();
     edit_mode.value = show
     current_row.value = row
   }
@@ -381,7 +436,7 @@ function saveItem(type) {
     axios.defaults.headers.common.Authorization = `Bearer ${token}`
     axios.post(url, data)
       .then((resp) => {
-        alert(resp.data.data);
+        // alert(resp.data.data);
         if (resp.data.success) loadData();
       })
       .catch((resp) => {
@@ -432,11 +487,41 @@ function cancelServiceRequest(item, comment) {
   }
 }
 
+function getListCities() {
+  const token = getCookie('api_token')
+  if (token) {
+    axios.defaults.headers.common.Authorization = `Bearer ${token}`
+    axios.get(`${routes.cities}`)
+      .then((resp) => {
+        if (resp.data.success) {
+          new_service_request.value.cities = resp.data.data;
+          // console.log('Result list cities ', data.cities);
+        } else {
+          // console.log('Empty list cities ');
+        }
+      })
+      .catch((resp) => {
+        // console.log('Error get list cities ', resp);
+      });
+  }
+}
+
 </script>
 
 <template>
   <div>
-    <CButton color="primary" @click="visible = !visible" class="mb-3 right">Фильтр</CButton>
+    <CRow>
+      <CCol sm2="10">
+        <CButton color="primary" @click="visible = !visible" class="mb-3 right">Фильтр</CButton>
+      </CCol>
+      <CCol sm2="2">
+        <CButton class="btn btn-dark" @click="changeEditMode(true, new_service_request)">
+          Создать заявку
+        </CButton>
+      </CCol>
+    </CRow>
+
+
     <CRow>
       <CCol sm="12">
         <CCollapse :visible="visible">

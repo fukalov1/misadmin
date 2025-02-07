@@ -12,12 +12,20 @@ const isResponsible = computed(() => {
     return false
 })
 
+const showPaycards = computed(() => {
+  if (router.currentRoute.value.fullPath === '/payment' || router.currentRoute.value.fullPath === '/'
+    || router.currentRoute.value.fullPath === '/pages/login' )
+    return true
+  else
+    return  false
+})
+
 </script>
 
 <template>
   <CFooter class="px-4">
     <div>
-      <a href="https://poverkadoma.ru" target="_blank">МС-Ресурс</a>
+      <a href="https://poverkadoma.ru" target="_blank">ИП Кузнецов</a>
       <span class="ms-1"
         >&copy; {{ new Date().getFullYear() }} Все права защищены.</span
       >
@@ -28,7 +36,7 @@ const isResponsible = computed(() => {
       <span @click="router.push('/pages/offer')" v-if="isResponsible">Оферта</span>
       {{ APP_VERSION }}
     </div>
-    <div class="pay-sys">
+    <div class="pay-sys" v-if="showPaycards">
               <ul>
                 <li><span class="mastercard"></span>
                 </li>
