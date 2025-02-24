@@ -32,17 +32,20 @@ const resultRestore = ref(null)
 const visibility = ref(false)
 
 onMounted(() => {
-  restoreData.email = atob(props.email);
-  restoreData.token = props.token;
+  restoreData.value.email = atob(props.email);
+  restoreData.value.token = props.token;
 })
 
 
 function restorePassword() {
-      const {email, token, password} = restoreData;
 
       // this.errors.auth = null;
 
-      axios.post('/api/reset-password', {email, token, password})
+      axios.post('/api/reset-password', {
+        email: restoreData.value.email,
+        token: restoreData.value.token,
+        password: restoreData.value.password
+      })
         .then((response) => {
           resultRestore.value = true;
           // this.status = response.data.status;
