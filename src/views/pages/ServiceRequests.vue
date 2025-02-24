@@ -319,10 +319,6 @@ function listUsers() {
   return result
 }
 
-function listCities() {
-  return cities.value
-}
-
 function getListCities() {
   const token = getCookie('api_token')
 
@@ -333,13 +329,10 @@ function getListCities() {
         if (resp.data.success) {
           cities.value = resp.data.data.map(item => { return {id: parseInt(item.id), value: item.name}})
           columns.map((item) => {
-            console.log('fill cities ',item.field, cities.value)
+            // console.log('fill cities ',item.field, cities.value)
             if (item.field === 'city_id')
               item.options = cities.value
           })
-          // console.log('cities', new_service_request.value)
-
-          // console.log('Result list cities ', data.cities);
         } else {
           // console.log('Empty list cities ');
         }

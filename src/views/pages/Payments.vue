@@ -1,6 +1,6 @@
 <script setup>
 
-import { ref, onMounted, watch, computed } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import axios from 'axios'
 import {routes} from '../../api/routes'
 import { getCookie } from '@/helpers/cookie'
@@ -160,19 +160,16 @@ function changeSort(val) {
   else {
     sort.value = []
   }
-  // console.log('change sort')
   loadData()
 }
 
 function changePage(page) {
   currentPage.value = page
-  // console.log('change page')
   loadData()
 }
 
 function changePerPage(perPage) {
   currentPerPage.value = perPage
-  // console.log('change per page')
   loadData()
 }
 
@@ -207,7 +204,7 @@ function enableFilterMode() {
       <CRow>
         <CCol sm2="2">
           <router-link to="/payment">
-            <CButton color="info" class="mb-2">Пополнить лимит поверок</CButton>
+            <CButton color="info" class="mb-2">Пополнить лимит выгрузок</CButton>
           </router-link>
         </CCol>
       </CRow>

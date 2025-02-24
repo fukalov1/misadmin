@@ -2,8 +2,12 @@
 import { AUTH_REQUEST } from '@/api/auth'
 import { ref, computed } from 'vue'
 import AppFooter from '@/components/AppFooter.vue'
+import {useAuthStore} from '@/stores/auth.js'
+
+const currAuthStore = useAuthStore()
 
 const email = ref('')
+const error = ref('')
 const password = ref('')
 const id1 = ref('')
 const id2 = ref('')
@@ -37,6 +41,11 @@ function checkAct() {
                   <h1>МС-Ресурс</h1>
                   <p class="text-body-secondary">Личный кабинет
                     поверителя</p>
+                  <CRow>
+                    <CCol class="text-center text-danger">
+                      {{ currAuthStore.errors }}
+                    </CCol>
+                  </CRow>
                   <CInputGroup class="mb-3">
                     <CInputGroupText>
                       <CIcon icon="cil-user" />
@@ -63,9 +72,10 @@ function checkAct() {
                       <CButton color="primary" class="px-4" @click="Authentication"> Вход </CButton>
                     </CCol>
                     <CCol :xs="6" class="text-right">
-            <!--                      <CButton color="link" class="px-0">-->
-            <!--                        Забыли пароль?-->
-            <!--                      </CButton>-->
+                      <router-link :to="{name: 'forgot-password'}"><CButton color="link" class="px-0">
+                                    Забыли пароль?
+                                  </CButton></router-link>
+                      <CButton color="link" class="d-lg-none">Регистрация</CButton>
                     </CCol>
                   </CRow>
                 </CForm>

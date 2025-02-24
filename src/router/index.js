@@ -152,6 +152,19 @@ const routes = [
         component: () => import('@/views/pages/Login'),
       },
       {
+        path: 'forgot-password',
+        name: 'forgot-password',
+        meta: { title: 'Забыли пароль', auth: false },
+        component: () => import('@/views/pages/ForgotPassword'),
+      },
+      {
+        path: 'restore-password/:email/:token',
+        name: 'restore-password',
+        meta: { title: 'Восстановление пароля', auth: false },
+        component: () => import('@/views/pages/RestorePassword'),
+        props: true
+      },
+      {
         path: 'auto-login/:token',
         name: 'auto-login',
         meta: { title: 'Авторизация', auth: false },
@@ -202,7 +215,8 @@ router.beforeEach((to, from, next) => {
   }
 
   if (currentUser.isLoggedIn===false && to.path !== '/pages/login' && to.name !== 'auto-login' && to.path !== '/pages/privacy'
-    && to.path !== '/pages/info' && to.path !== '/pages/offer' && to.path !== '/pages/404') {
+    && to.path !== '/pages/info' && to.path !== '/pages/offer' && to.path !== '/pages/404'
+    && to.path !== '/pages/forgot-password' && to.path.indexOf('restore-password') === -1) {
     // console.log('test', !currentAuth.isLoggin, from.path, to.meta.auth)
     next({ path: "/pages/login" })
   }

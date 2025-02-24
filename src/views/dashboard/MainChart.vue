@@ -14,6 +14,8 @@ let data = ref({
     {
       label: 'Поверки',
       backgroundColor: '#0033cc',
+      borderColor: '#0033cc',
+      fill: true,
       data: [],
     },
   ],
@@ -72,7 +74,8 @@ onMounted(() => {
   axios.post(`/api/get-statistic-total`).then((response) => {
     if (response.data.success === true) {
       data = response.data.data;
-      // console.log('data', data)
+      // data.datasets[0].fill = true
+      console.log('data', data)
     }
 
     process.value = true

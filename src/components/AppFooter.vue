@@ -1,4 +1,10 @@
 <script setup>
+import mastercard from '@/assets/images/mastercard.png'
+import visa from '@/assets/images/visa.png'
+import mir from '@/assets/images/mir.png'
+import sbp from '@/assets/images/sbp.png'
+// import sber from '@/assets/images/sber.png'
+import paykeeper from '@/assets/images/paykeeper.png'
 import {computed} from 'vue'
 import {APP_VERSION} from "@/environments/app-version";
 import router from '@/router'
@@ -38,21 +44,23 @@ const showPaycards = computed(() => {
     </div>
     <div class="pay-sys" v-if="showPaycards">
               <ul>
-                <li><span class="mastercard"></span>
-                </li>
-                <li><span class="paykeeper"></span>
+                <li>
+                  <img :src="mastercard"/>
                 </li>
                 <li>
-                  <span class="visa"></span>
+                  <img :src="paykeeper"/>
                 </li>
                 <li>
-                  <span class="mir"></span>
+                  <img :src="visa"/>
                 </li>
                 <li>
-                  <span class="sb"></span>
+                  <img :src="mir"/>
                 </li>
+<!--                <li>-->
+<!--                  <img :src="sber"/>-->
+<!--                </li>-->
                 <li>
-                  <span class="cbp"></span>
+                  <img :src="sbp"/>
                 </li>
               </ul>
             </div>

@@ -5,6 +5,7 @@ import { deleteCookie } from '@/helpers/cookie'
 export const useUserStore = defineStore('user', {
   state: () => ({
     isLoggedIn: false,
+    errorAuth: null,
     token: '',
     role: null,
     roles: null,
@@ -13,6 +14,9 @@ export const useUserStore = defineStore('user', {
   getters: {
     isLoggedInAndHasToken({isLoggedIn, token}) {
       return isLoggedIn && token
+    },
+    isErrorAuth(errorAuth) {
+      return errorAuth
     }
   },
   actions: {
@@ -37,6 +41,9 @@ export const useUserStore = defineStore('user', {
     setUser(_user) {
       this.user = _user
       this.roles = _user.roles
+    },
+    setErrorAuth(error) {
+      this.errorAuth = error
     }
   }
 })

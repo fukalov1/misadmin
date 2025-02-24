@@ -3,6 +3,7 @@ import { defineStore } from 'pinia'
 
 export const useAuthStore = defineStore('auth', () => {
   const isLoggin = ref(true)
+  const errors = ref(null)
 
   const toggleisLoggin = (_isLoggin) => {
     isLoggin.value = _isLoggin
@@ -14,5 +15,9 @@ export const useAuthStore = defineStore('auth', () => {
     role.value = _role
   }
 
-  return { isLoggin, toggleisLoggin, role, toggleRole }
+  const setErrors = (_errors) => {
+    errors.value = _errors
+  }
+
+  return { isLoggin, toggleisLoggin, role, toggleRole, setErrors, errors }
 })

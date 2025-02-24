@@ -14,9 +14,9 @@ import simplebar from 'simplebar-vue'
 import 'simplebar-vue/dist/simplebar.min.css'
 
 roles = JSON.parse(localStorage.getItem('user_roles'))
-console.log('Roles is app side bar nav! ', roles)
+// console.log('Roles is app side bar nav! ', roles)
 fillNavFiltered()
-console.log('Nav filtered ', nav_filtered.value)
+// console.log('Nav filtered ', nav_filtered.value)
 
 function fillNavFiltered() {
   nav_filtered.value = nav.filter((item) => {
